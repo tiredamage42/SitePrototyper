@@ -40,15 +40,22 @@ body {
 }
 
 /* languge select tabs */
-.tab button {
+
+
+.tablinks{
+/* .tab button { */
     background-color: inherit;
     border-style: solid;
     padding: 5px 10px;
     margin: 0;
 }
-.tab button:hover {
+
+.tablinks:hover{
+/* .tab button:hover { */
     background-color: #ddd;
 }
-.tab button.active {
+
+.tablinks.active{
+/* .tab button.active { */
     background-color: rgb(162, 154, 154);
 }

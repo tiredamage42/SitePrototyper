@@ -1,26 +1,52 @@
 <html>
     <head>
+
         <title>Site Prototyper</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- out styles -->
         <link rel="stylesheet" type="text/css" href="style.css" />
+
     </head>
+
     <body>
+
         <div id="site-container">
+
+            <!-- display the written html, css, and js. -->
+            <!-- left thand side of the screen -->
             <iframe id="result-display"> </iframe>
+
+            <!-- right hand side of the screen -->
             <div id="code-area">
+
+                <!-- the settings menu -->
                 <div id="menu-1">
                     <div id="language-select" class="tab"></div>
-                    <div id="theme-region">
-                        <label for="theme-select">Theme:</label>
-                        <select name="theme-select" id="theme-select"></select>
-                    </div>
+
+                    <label for="font-size-select">Font Size:</label>
+                    <select name="font-size-select" id="font-size-select"></select>
+
+                    <label for="theme-select">Theme:</label>
+                    <select name="theme-select" id="theme-select"></select>
+
+                    <button class="tablinks" id="wrap-button">Wrap</button>
                 </div>
+
+                <!-- the code editor -->
                 <div id="editor"></div>
+
             </div>
+
         </div>
+        <!-- ace dependencies -->
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ace.js"></script>
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-language_tools.js"></script>
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-beautify.js"></script>
+
+        <!-- our script -->
         <script charset="utf-8" type="module" src="app.js"></script>
+
     </body>
+
 </html>

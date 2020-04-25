@@ -1,23 +1,48 @@
-
 /*
-    initialize one instance of a code editor window
+    Handle configuring and initializing the ACE editor
+    and its sessions
+
+    (AKA the text box on the right hand side of teh screen
+        that the code gets typed into)
 */
 
-export function initializeEditor (editor, theme, onUpdate, onEditorChange) {
+// defaults
+export const defualtFontSize = 12;
+export const defualtTheme = 'monokai';
 
-    // set the theme as the default
-    editor.setTheme(`ace/theme/${theme}`);
+// initialize an ace editor, and start 3 sessions for html, css, js
+export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView) {
 
-    // add the callback to call when changed (if specified)
-    if (onEditorChange)
-        editor.session.on('change', onEditorChange);
+    // create the editor
+    let editor = ace.edit("editor");
 
-    // add teh update command
+    // create the sessions
+    let EditSession = require("ace/edit_session").EditSession;
+    let session_html = new EditSession('', `ace/mode/html`);
+    let session_css = new EditSession('', `ace/mode/css`);
+    let session_js = new EditSession('', `ace/mode/javascript`);
+
+    // set the text on the sessions to the default
+    session_html.setValue(defaultHTML);
+    session_css.setValue(defaultCSS);
+    session_js.setValue(defaultJS);
+
+    // update the result display with the default values
+    onUpdateView (defaultHTML, defaultCSS, defaultJS);
+
+    // create an object for the sessions
+    const name2session =  {
+        HTML: session_html,
+        CSS: session_css,
+        JS: session_js,
+    };
+
+    // add teh update view command
     editor.commands.addCommand({
         name: 'Update View',
         bindKey: { win: 'Ctrl-S',  mac: 'Command-S' },
         exec: function(editor) {
-            onUpdate();
+            onUpdateView (session_html.getValue(), session_css.getValue(), session_js.getValue());
         },
         // readOnly: true // false if this command should not apply in readOnly mode
     });
@@ -61,9 +86,7 @@ export function initializeEditor (editor, theme, onUpdate, onEditorChange) {
     // set configuration options
     editor.setOptions({
         // TODO: PUT THE FOLLOWING IN PUBLIC MENU / TOGGLE
-        wrap: true,
         tabSize: 2,
-        // fontSize: number or css font-size string
         // fontFamily: css font-family value
         // ================================================
 
@@ -78,10 +101,10 @@ export function initializeEditor (editor, theme, onUpdate, onEditorChange) {
         // // this is needed if editor is inside scrollable page
         // autoScrollEditorIntoView: boolean (defaults to false)
 
+        // wrapBehavioursEnabled: true,
         // readOnly: true|false
         // mergeUndoDeltas: false|true|"always"
         // behavioursEnabled: boolean
-        // wrapBehavioursEnabled: boolean
         // // copy/cut the full line if selection is empty, defaults to false
         // copyWithEmptySelection: boolean
         // useSoftTabs: boolean (defaults to false)
@@ -144,4 +167,53 @@ export function initializeEditor (editor, theme, onUpdate, onEditorChange) {
         // // the following option requires ext-elastic_tabstops_lite.js
         // useElasticTabstops: boolean
     });
+
+    // add the callback to call when changed (if specified)
+    // session.on('change', onEditorChange);
+
+    // editor.setReadOnly(true);  // false to make it editable
+
+    return { editor, name2session };
 }
+
+// all the possible editor color themes
+export const themes = [
+	'ambiance',
+	'chaos',
+	'chrome',
+	'clouds',
+	'clouds_midnight',
+	'cobalt',
+	'crimson_editor',
+	'dawn',
+	'dracula',
+	'dreamweaver',
+	'eclipse',
+	'github',
+	'gob',
+	'gruvbox',
+	'idle_fingers',
+	'iplastic',
+	'katzenmilch',
+	'kr_theme',
+	'kuroir',
+	'merbivore',
+	'merbivore_soft',
+	'mono_industrial',
+	'monokai',
+	'nord_dark',
+	'pastel_on_dark',
+	'solarized_dark',
+	'solarized_light',
+	'sqlserver',
+	'terminal',
+	'textmate',
+	'tomorrow',
+	'tomorrow_night',
+	'tomorrow_night_blue',
+	'tomorrow_night_bright',
+	'tomorrow_night_eighties',
+	'twilight',
+	'vibrant_ink',
+	'xcode',
+];
