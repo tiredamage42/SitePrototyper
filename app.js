@@ -20,6 +20,7 @@ const defaultHTML = `
                 <a href="https://github.com/tiredamage42/SitePrototyper">View The Source Code Here</a>
             </b>
         </p>
+        <button type="submit" id="demo-button">Click Here To Test JS</button>
     </body>
 </html>
 `;
@@ -37,7 +38,13 @@ code {
     margin: 25px;
 }
 `;
-const defaultJS = '';
+const defaultJS = `
+const btn = document.getElementById('demo-button');
+
+btn.addEventListener('click', (e) => {
+   btn.style.color = btn.style.color === "red" ? "green" : "red";
+});
+`;
 
 let { editor, name2session } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay);
 
