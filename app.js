@@ -14,7 +14,7 @@ themes.forEach((t) => {
     themeSelector.appendChild(opt);
 });
 
-let showIFrame = document.getElementById("code");
+let resultDisplay = document.getElementById("result-display");
 
 var editor = ace.edit("editor");
 
@@ -61,6 +61,15 @@ function createTemporaryNode (html) {
 
 function extractHeadAndBodyHTML (html) {
     let htmlNode = createTemporaryNode (html);
+
+    // fix links to always open in a new tab,
+    // links inside iframes generate CORS errors when going to a differnt domain
+    // TODO: waht if user wants link to open in editor?
+    let links = htmlNode.getElementsByTagName('a');
+    for (let i = 0; i < links.length; i++)
+        links[i].setAttribute('target', '_base');
+
+
     let headText = '';
 
     // needs to start off as null, not empty string, for || check when inserting in 'onUpdateView'
@@ -93,7 +102,7 @@ function onUpdateView () {
 
     let { head, title, html } = extractHeadAndBodyHTML (editSession_html.getValue());
 
-    showIFrame.srcdoc = `
+    resultDisplay.srcdoc = `
         <html>
             <head>
                 <title>${title || 'INSERT TITLE HERE'}</title>

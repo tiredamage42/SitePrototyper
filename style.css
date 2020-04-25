@@ -11,7 +11,7 @@ body {
 }
 
 /* where the product is actually rendered */
-iframe {
+#result-display {
     background-color: white;
     flex: 1;
     margin: 0;

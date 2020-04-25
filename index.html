@@ -1,60 +1,26 @@
-
 <html>
     <head>
         <title>Site Prototyper</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" type="text/css" href="style.css" />
-
     </head>
     <body>
-
         <div id="site-container">
-
-            <iframe id="code"> </iframe>
-
+            <iframe id="result-display"> </iframe>
             <div id="code-area">
-
                 <div id="menu-1">
-
                     <div id="language-select" class="tab"></div>
                     <div id="theme-region">
-
-
                         <label for="theme-select">Theme:</label>
-                        <!-- <span>Theme:</span>  -->
                         <select name="theme-select" id="theme-select"></select>
                     </div>
                 </div>
-
-                <!-- <div id="editors"> -->
-                    <div id="editor"></div>
-                    <!-- <div id="editor-html"></div>
-                    <div id="editor-css"></div>
-                    <div id="editor-js"></div> -->
-                <!-- </div> -->
+                <div id="editor"></div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-        <!-- <iframe id="code"> </iframe> -->
-        <!-- <iframe scrolling="yes" id="code"> </iframe> -->
-
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ace.js"></script>
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-language_tools.js"></script>
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-beautify.js"></script>
-
-        <!-- <script charset="utf-8" type="text/javascript" src="themes.js"></script> -->
-        <!-- <script charset="utf-8" type="text/javascript" src="editorSetup.js"></script> -->
-        <!-- <script charset="utf-8" type="module" src="editorSetup.js"></script> -->
-
         <script charset="utf-8" type="module" src="app.js"></script>
-        <!-- <script charset="utf-8" type="text/javascript" src="app.js"></script> -->
-
     </body>
 </html>

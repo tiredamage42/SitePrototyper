@@ -19,3 +19,4 @@
 - Import/Export from/to git
 - Display Console Logs Section
 - Fix 'undo' When switching language sessions
+- Fix 'local' links that shouldnt open in a new tab
