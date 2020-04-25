@@ -23,13 +23,41 @@ let editSession_html = new EditSession('', `ace/mode/html`);
 let editSession_css = new EditSession('', `ace/mode/css`);
 let editSession_js = new EditSession('', `ace/mode/javascript`);
 
+editSession_html.setValue(`
+<h1>Site Prototyper</h1>
+<p>
+    Press <code>Ctrl-S</code> (<code>Cmd-S</code> on OS-X)
+    to update the view.
+</p>
+<p id="source-link">
+    <b>
+        <a href="https://github.com/tiredamage42/SitePrototyper">View The Source Code Here</a>
+    </b>
+</p>
+`);
+
+editSession_css.setValue(`
+body {
+    text-align: center;
+}
+code {
+    background-color: rgba(0,0,0,.5);
+    color: rgba(230, 230, 230, 255);
+    padding: 0 5px;
+}
+#source-link {
+    margin: 25px;
+}
+`);
+
+onUpdateView();
+
 function createTemporaryNode (html) {
     // create a temprorary html node with our html string
     var div = document.createElement('div');
     div.innerHTML = html;
     return div;
 }
-
 
 function extractHeadAndBodyHTML (html) {
     let htmlNode = createTemporaryNode (html);
@@ -96,12 +124,14 @@ const name2session =  {
 
 
 let tabContainer = document.getElementById('language-select');
-
-Object.keys(name2session).forEach( l => {
+Object.keys(name2session).forEach( (l, i) => {
     let btn = document.createElement('button');
     tabContainer.appendChild(btn);
     btn.className = "tablinks";
     btn.innerText = l;
+    if (i == 0)
+        btn.className += " active";
+
 });
 
 tabContainer.addEventListener('click', onLanguageTab);
@@ -110,9 +140,11 @@ function onLanguageTab(evt) {
     let clicked = evt.target;
     if (clicked.tagName === 'BUTTON') {
         if (clicked.innerText in name2session) {
-            tabContainer.children.forEach(b => b.className = b.className.replace(" active", "") );
-            edit.setSession(name2session[evt.target.innerText]);
+            Array.from(tabContainer.children).forEach(b => b.className = b.className.replace(" active", "") );
+            editor.setSession(name2session[evt.target.innerText]);
             clicked.className += " active";
+
+            console.log(clicked);
         }
     }
 }

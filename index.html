@@ -7,26 +7,42 @@
 
     </head>
     <body>
-        <select id=theme-select></select>
 
-        <!-- Tab links -->
-        <div id="language-select" class="tab">
-            <!-- <button class="tablinks" onclick="onLanguageTab(event)">HTML</button>
-            <button class="tablinks" onclick="onLanguageTab(event)">CSS</button>
-            <button class="tablinks" onclick="onLanguageTab(event)">JS</button> -->
+        <div id="site-container">
+
+            <iframe id="code"> </iframe>
+
+            <div id="code-area">
+
+                <div id="menu-1">
+
+                    <div id="language-select" class="tab"></div>
+                    <div id="theme-region">
+
+
+                        <label for="theme-select">Theme:</label>
+                        <!-- <span>Theme:</span>  -->
+                        <select name="theme-select" id="theme-select"></select>
+                    </div>
+                </div>
+
+                <!-- <div id="editors"> -->
+                    <div id="editor"></div>
+                    <!-- <div id="editor-html"></div>
+                    <div id="editor-css"></div>
+                    <div id="editor-js"></div> -->
+                <!-- </div> -->
+            </div>
         </div>
 
-        <div id="editors">
 
 
-            <div id="editor"></div>
 
-            <!-- <div id="editor-html"></div>
-            <div id="editor-css"></div>
-            <div id="editor-js"></div> -->
-        </div>
 
-        <iframe id="code"> </iframe>
+
+
+
+        <!-- <iframe id="code"> </iframe> -->
         <!-- <iframe scrolling="yes" id="code"> </iframe> -->
 
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ace.js"></script>

@@ -17,3 +17,5 @@
 - Finalize CSS layout and color scheme to make it look nice.
 - Deployment To Github Repo / Pages
 - Import/Export from/to git
+- Display Console Logs Section
+- Fix 'undo' When switching language sessions
