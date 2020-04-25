@@ -1,0 +1,44 @@
+
+<html>
+    <head>
+        <title>Site Prototyper</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="style.css" />
+
+    </head>
+    <body>
+        <select id=theme-select></select>
+
+        <!-- Tab links -->
+        <div id="language-select" class="tab">
+            <!-- <button class="tablinks" onclick="onLanguageTab(event)">HTML</button>
+            <button class="tablinks" onclick="onLanguageTab(event)">CSS</button>
+            <button class="tablinks" onclick="onLanguageTab(event)">JS</button> -->
+        </div>
+
+        <div id="editors">
+
+
+            <div id="editor"></div>
+
+            <!-- <div id="editor-html"></div>
+            <div id="editor-css"></div>
+            <div id="editor-js"></div> -->
+        </div>
+
+        <iframe id="code"> </iframe>
+        <!-- <iframe scrolling="yes" id="code"> </iframe> -->
+
+        <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ace.js"></script>
+        <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-language_tools.js"></script>
+        <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-beautify.js"></script>
+
+        <!-- <script charset="utf-8" type="text/javascript" src="themes.js"></script> -->
+        <!-- <script charset="utf-8" type="text/javascript" src="editorSetup.js"></script> -->
+        <!-- <script charset="utf-8" type="module" src="editorSetup.js"></script> -->
+
+        <script charset="utf-8" type="module" src="app.js"></script>
+        <!-- <script charset="utf-8" type="text/javascript" src="app.js"></script> -->
+
+    </body>
+</html>
