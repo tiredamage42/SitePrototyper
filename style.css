@@ -1,15 +1,11 @@
 
 body {
-    /* position: relative; */
-    /* padding: 1px; */
-    /* padding: 0; */
     margin: 0;
     background-color: darkgrey;
 }
 
 /* contains both the rendered product column and the coding area */
 #site-container {
-    /* position: relative; */
     margin: 0;
     padding: 0;
     display: flex;
@@ -18,78 +14,32 @@ body {
 }
 
 #top-half {
-    /* background-color: blue; */
-    /* position: relative; */
     display: flex;
-    /* flex-direction: column; */
-
-    /* flex-grow: 1; */
     flex:1;
-    /* flex-grow: 1; */
-/* flex-shrink: 1;
-flex-basis: auto; */
 }
-#bottom-half {
-    /* border-top-left-radius: 7px;
-    border-top-right-radius: 7px; */
+/* #bottom-half {
 
-
-    /* background-color: green; */
-    /* display: flex; */
-  /* justify-content: center; */
-  /* flex-direction: column; */
-    /* flex-grow: 1;
-flex-shrink: 1;
-flex-basis: auto; */
-    /* flex:1; */
-}
+} */
 
 /* where the product is actually rendered */
 #result-display {
-
-
-    /* position: relative; */
-
     background-color: white;
-    /* background-color: red; */
-
-
     flex: 1;
     margin: 0;
     padding: 0;
     border: 0;
-    /* height: 100%; */
 }
 
 /* the coding area, including menu */
 #code-area {
     flex: 1;
-    /* position: relative; */
-    /* height: 100%; */
-
     display: flex;
     flex-flow: column;
 }
 
-
-/* #menus {
-
-} */
-
-
 #menu-0{
-
-    /* height: 50%; */
-    /* height: 100%; */
-    /* flex: 1; */
-    /* flex-grow : 1; */
-
-    /* margin-top: 1rem; */
     display: flex;
     flex-direction: row-reverse;
-    /* justify-content: right; */
-    /* justify-content: space-between; */
-    /* align-items: center; */
     border: 1px solid #ccc;
     background-color: #f1f1f1;
 }
@@ -97,73 +47,29 @@ flex-basis: auto; */
 
 /* the displayed menu at the top of the coding area */
 #menu-1{
-    /* height: 100%; */
-    /* flex-grow : 1;
-    flex: 1; */
-    /* margin-top: 1rem; */
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: 2px solid #ccc;
-
-    /* border-style: solid;
-    border-color: #ccc; */
-
     background-color: #f1f1f1;
 }
 
 
-  #editor-container {
+#editor-container {
     display: flex;
-    /* flex-direction: column; */
-
-      position: relative;
-
-      /* bottom: -10px; */
-    /* height: 100%; */
-    /* height:  auto; */
-    /* height: 10; */
-
+    position: relative;
     padding: 0;
     margin: 0;
-
-    /* flex:1; */
     flex-grow : 1;
-
-    /* overflow: hidden; */
-
-    /* background-color: red; */
-
-  }
-
+}
 
 /* the editor text input field (doesnt respond well to flexbox...) */
 #editor {
-    /* display: flex; */
     flex: 1;
-    /* flex-grow : 1; */
-    /* flex-flow: column; */
-
-    /* position: absolute; */
-    /* height: 100%; */
-    /* width: 100%; */
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   #keyboard-shortcuts {
-      /* display: none; */
       overflow: auto;
       z-index: 10;
     padding: 10px;
@@ -172,16 +78,12 @@ flex-basis: auto; */
     right: 20;
 
     background-color: rgba(100, 100, 100, 1);
-    /* margin-left: auto;
-margin-right: auto; */
+
     top: 0;
     bottom: 0;
     opacity: 0;
     visibility: hidden;
-    /* display: none; */
-    /* bottom: 50%; */
-    /* bottom: 0; */
-    /* right: 0; */
+
   }
   #keyboard-shortcuts.active {
     visibility: visible;
@@ -201,171 +103,67 @@ margin-right: auto; */
 }
 .keyboard-shortcut-bindKey {
     text-align: right;
-    /* color: red; */
 }
-
-
-
-
-
-
-    /* #log-window-handle {
-        flex-grow: 5;
-      float: top;
-      height: 20px;
-      width: 100%;
-      background-color: blue;
-      z-index: 99;
-    }
-
-    #log-window-handle::after {
-      content: "";
-      height: 9px;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      margin-top: -4px;
-      background-color: transparent;
-      cursor: ew-resize;
-      z-index: 999;
-    } */
-
 
 
 
 #log-window {
 
-
-
-    /* resize: vertical; */
-    /* top: 0; */
-    /* float: top; */
-
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    /* border-style: hidden; */
 
     display: flex;
     flex-direction: column;
 
-    /* z-index: 99999999; */
-
-    /* position: absolute; */
-    /* margin: 0 -9px; */
-    /* bottom: 0; */
     margin: 0;
     padding: 0;
-    /* left */
-    /* right:20; */
-
-    /* width: 150px; */
-    /* width: 10%; */
 
     width: 100%;
-    /* height: 100%; */
-    /* max-height: 33%; */
-
-    /* max-width: 0%; */
-    /* height: 150px; */
     max-height: 0%;
 
-
-    /* height: 150px; */
     background-color: rgb(43, 42, 42);
-
-    /* overflow: auto; */
     overflow: hidden;
-    /* transition: .2s; */
 }
 #log-window.active {
-
-    /* --resizeable-height: 300px;
-    height: var(--resizeable-height); */
-
-      /* max-width: var(--max-width); */
-
-
-    /* height: 150px; */
-
     max-height: 100%;
-
-    /* max-width: 100%; */
-    /* transition: .2s; */
 }
 
 
 #log-window-messages {
     height: 99999px;
-    /* --resizeable-height: 300px; */
-    /* height: var(--resizeable-height); */
 
     --resizeable-height: 33%;
     max-height: var(--resizeable-height);
 
-    /* flex-grow: 1; */
-
-    /* display: none; */
-    /* height: 0; */
-    /* position: relative; */
-    /* overflow: hidden; */
     overflow: auto;
-    /* background: blue; */
 }
-/* #log-window-messages.active {
-    height: 100%;
-    transition: 1s;
-} */
 
-/* #log-window-buttons-container { */
-    /* z-index: 99999999; */
-
-    /* margin: 0;
-    padding: 0; */
-/* } */
 .log-window-button {
-    /* z-index: 99999999; */
     margin: 3;
-    /* margin-right: 10; */
-    /* height: 100%; */
-    /* padding: 10; */
-    /* display: flex; */
 }
 
 #log-window-title {
-    /* flex-direction: column; */
-    /* flex-grow: 5; */
     display: flex;
-    /* flex: 2; */
-
-    /* height: 50px; */
-    /* height: 100%; */
-
-    /* padding: 2px; */
-    /* align-items: center; */
-    /* align-self: center; */
-    /* text-align: center; */
 
     justify-content: space-between;
     background-color: rgb(91, 88, 88);
 
-    /* box-shadow: 1px 1px #ccc; */
     border-color: #ccc;
     color: #ccc;
 
     border-width: 1px;
     border-style: solid;
 
-    /* border-radius: 10px; */
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
 
+    cursor: ns-resize;
+
+
+
+
 }
 #log-window-title p {
-    /* text-anchor: middle; */
-    /* text-align: center; */
-    /* color: red; */
-    /* padding: 5px; */
-    /* border-style: solid; */
     margin: 0;
     padding: 2px;
 }
@@ -377,14 +175,10 @@ margin-right: auto; */
     border-style: solid;
     border-width: 1px;
     border-top: 0;
-    /* border-top: 0; */
-    /* margin: 2px; */
     margin: 0px;
-    /* margin-left: 0;
-    margin-right: 0; */
-    padding: 10px;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 30px;
 
     margin-left: 0;
     margin-right: 0;
@@ -394,109 +188,79 @@ margin-right: auto; */
     display: flex;
     justify-content: space-between;
 }
+#show-key-shortcuts i {
+    font-size: 20px;
+
+}
 
 .log-message > i {
     color: darkgray;
     font-size: 18;
-    /* margin-right: auto; */
-    /* float: right; */
-    /* float: top; */
 
-    padding: 5;
-    /* margin: 0; */
-    /* top: 0; */
-    /* bottom: 0; */
+    cursor: pointer;
 }
 
 .log-message.err {
     color: red;
     border-color: darkgray;
-    /* background-color: darkgray; */
 }
 .log-message.warn {
     color: darkorange;
     border-color: darkgray;
-    /* background-color: black; */
 }
 .log-message.log {
     color: darkgray;
-    /* background-color: black; */
 }
 
 
 /* always show scrollbars */
 
 #log-window-messages::-webkit-scrollbar {
-/* #log-window::-webkit-scrollbar { */
     -webkit-appearance: none;
     width: 7px;
   }
 
 #log-window-messages::-webkit-scrollbar-thumb {
-/* #log-window::-webkit-scrollbar-thumb { */
-
     border-radius: 4px;
     background-color: rgba(0, 0, 0, .5);
     box-shadow: 0 0 1px rgba(255, 255, 255, .5);
   }
 
 
-
-
-
 .tablinks{
-    /* .tab button { */
 
-        border-color: #ccc;
-        background-color: inherit;
-        border-style: solid;
-        /* border-width: 1px; */
+    border-color: #ccc;
+    background-color: inherit;
+    border-style: solid;
 
-        border-top: 0;
-        border-bottom: 0;
-        /* border-left: 0; */
-        padding: 5px 10px;
-        margin: 0;
-    }
-
-    .tablinks:hover{
-    /* .tab button:hover { */
-        background-color: #ddd;
-    }
-
-    .tablinks.active{
-    /* .tab button.active { */
-        background-color: rgb(162, 154, 154);
-    }
-
-
-
-
-#log-window-toggle {
-    /* font-size: 15; */
-
-    /* padding: 5px; */
-    /* align-content: center; */
-    /* align-items: center; */
+    border-top: 0;
+    border-bottom: 0;
+    padding: 5px 10px;
+    margin: 0;
 }
+
+.tablinks:hover{
+    background-color: #ddd;
+}
+.tablinks.active{
+    background-color: rgb(162, 154, 154);
+}
+
+
+
+
+/* #log-window-toggle {
+
+} */
 #log-window-toggle .material-icons {
     font-size: 15;
 }
 #log-window-toggle-info {
-    /* font-size: 15; */
+
 }
 #log-window-toggle-warning {
     color:darkorange;
-    /* font-size: 15; */
 }
 #log-window-toggle-error {
     color:red;
-    /* font-size: 15; */
 }
-
-
-    /* <button class="tablinks" id="log-window-toggle">Console
-                            <i id="log-window-toggle-info" class="material-icons">info</i>
-                            <i id="log-window-toggle-warning" class="material-icons">warning</i>
-                            <i id="log-window-toggle-error" class="material-icons">error</i>
-                        </button> */

@@ -3,18 +3,9 @@ import { initializeEditor } from './scripts/editor-setup.js';
 import { initializeKeyboardShortcutShower, initializeThemeSelector, initializeFontSizeSelector, initializeWrapButton, initializeLanguageSelection } from './scripts/menu-setup.js';
 import { updateDisplay } from './scripts/result-display.js';
 
+import { clearLogs } from  './scripts/logs-setup.js';
 
 
-
-
-
-
-
-
-
-
-
-import {  } from  './scripts/logs-setup.js';
 const defaultHTML = `
 <html>
     <head>
@@ -54,11 +45,14 @@ const defaultJS = `
 const btn = document.getElementById('demo-button');
 
 btn.addEventListener('click', (e) => {
-   btn.style.color = btn.style.color === "red" ? "green" : "red";
+    alert("JS is functional, check the console to see console logs");
+    console.log('A normal console log');
+    console.warn('A warning message');
+    console.error('An error message!');
 });
 `;
 
-let { editor, name2session } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay);
+let { editor, name2session } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay, clearLogs);
 
 initializeThemeSelector ( (theme) => editor.setTheme(`ace/theme/${theme}`) );
 
@@ -84,47 +78,18 @@ const skipShortcuts = [
     'openCommandPallete'
 ];
 
-
-
-// let shortcutsWithBindings = Object.values(editor.commands.commands).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
 let shortcutsWithBindings = Object.values(editor.commands.byName).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
 
-// console.log(shortcutsWithBindings);
-initializeKeyboardShortcutShower (shortcutsWithBindings, (sc, i, s1, s2) => {
+initializeKeyboardShortcutShower (shortcutsWithBindings, (shortcut, i, s1, s2) => {
 
-    s1.innerText = `${sc.name}:`;
+    s1.innerText = `${shortcut.name}:`;
 
-    let mac = sc.bindKey.mac;
+    let mac = shortcut.bindKey.mac;
+
+    // shorten the strign a little
     if (mac)
-        mac = sc.bindKey.mac.replace(/Command/g, 'Cmd');
+        mac = shortcut.bindKey.mac.replace(/Command/g, 'Cmd');
 
-        s2.innerText = `Mac: ${mac || sc.bindKey.win}\nWin: ${sc.bindKey.win || mac}`;
+    s2.innerText = `Mac: ${mac || shortcut.bindKey.win}\nWin: ${shortcut.bindKey.win || mac}`;
 
-    // console.log(sc.name);
-    // console.log(sc.bindKey);
 });
-    // shortcuts.forEach((sc, i) => {
-    //     let p = document.createElement('p');
-    //     populateShortcut(sc, i, p);
-    //     keyboardShortcutsView.appendChild(p);
-    // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// iframeWindow.console.log = function(val) {
-//     var divId = document.getElementById("console");
-//     var span = document.createElement("span");
-//     span.appendChild(document.createTextNode(val));
-//     divId.appendChild(span);
-// };

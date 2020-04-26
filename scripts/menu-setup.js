@@ -61,13 +61,9 @@ export function initializeWrapButton (toggleWrap) {
 }
 
 
-
-
-
 export function initializeFileImport (onFileReceived) {
     // initialize the event listener
     document.getElementById('file-import').addEventListener('click', (evt) => {
-
 
         onFileReceived (textFromFile);
     });
@@ -94,8 +90,6 @@ export function initializeKeyboardShortcutShower (shortcuts, populateShortcut) {
         if (!isActive) {
             keyboardShortcutsView.className += " active";
             btn.className += " active"; // add the 'active' class
-
-
         }
         else{
             keyboardShortcutsView.className = keyboardShortcutsView.className.replace(" active", ""); // remove the 'active' class
@@ -118,28 +112,10 @@ export function initializeKeyboardShortcutShower (shortcuts, populateShortcut) {
         let s1 = createSpanDiv ('keyboard-shortcut-name');
         let s2 = createSpanDiv ('keyboard-shortcut-bindKey');
 
-
-
-        // let s1 = document.createElement('span');
-        // s1.className = 'keyboard-shortcut-name';
-        // let s2 = document.createElement('span');
-        // s2.className = 'keyboard-shortcut-bindKey';
-        // d.appendChild(s1);
-        // d.appendChild(s2);
-
         populateShortcut(sc, i, s1, s2);
         keyboardShortcutsView.appendChild(d);
     });
 }
-
-
-
-
-
-
-
-
-
 
 
 // language select (html, css, or js) is set up with "tabs" buttons

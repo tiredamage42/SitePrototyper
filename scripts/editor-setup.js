@@ -11,44 +11,52 @@ export const defualtFontSize = 12;
 export const defualtTheme = 'monokai';
 
 // initialize an ace editor, and start 3 sessions for html, css, js
-export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView) {
+export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand) {
+    // update the result display with the default values
+    onUpdateView (defaultHTML, defaultCSS, defaultJS);
 
     // create the editor
     let editor = ace.edit("editor");
 
     // create the sessions
     let EditSession = require("ace/edit_session").EditSession;
-    let session_html = new EditSession('', `ace/mode/html`);
-    let session_css = new EditSession('', `ace/mode/css`);
-    let session_js = new EditSession('', `ace/mode/javascript`);
 
-    // set the text on the sessions to the default
-    session_html.setValue(defaultHTML);
-    session_css.setValue(defaultCSS);
-    session_js.setValue(defaultJS);
-
-    session_html.setUndoManager(new ace.UndoManager());
-    session_css.setUndoManager(new ace.UndoManager());
-    session_js.setUndoManager(new ace.UndoManager());
-
-    // update the result display with the default values
-    onUpdateView (defaultHTML, defaultCSS, defaultJS);
+    function createSession (mode, defaultText) {
+        let session = new EditSession('', `ace/mode/${mode}`);
+        // set the text on the sessions to the default
+        session.setValue(defaultText);
+        session.setUndoManager(new ace.UndoManager());
+        return session;
+    }
 
     // create an object for the sessions
     const name2session =  {
-        HTML: session_html,
-        CSS: session_css,
-        JS: session_js,
+        HTML: createSession ('html', defaultHTML),
+        CSS: createSession ('css', defaultCSS),
+        JS: createSession ('javascript', defaultJS),
     };
+
+    function updateViewWithSessions () {
+        onUpdateView (name2session.HTML.getValue(), name2session.CSS.getValue(), name2session.JS.getValue());
+    }
 
     // add teh update view command
     editor.commands.addCommand({
         name: 'Update View',
         bindKey: { win: 'Ctrl-S',  mac: 'Command-S' },
         exec: function(editor) {
-            onUpdateView (session_html.getValue(), session_css.getValue(), session_js.getValue());
+            updateViewWithSessions();
         },
         // readOnly: true // false if this command should not apply in readOnly mode
+    });
+    // add teh update view command
+    editor.commands.addCommand({
+        name: 'Update View And Clear Console',
+        bindKey: { win: 'Ctrl-Shift-S',  mac: 'Command-Shift-S' },
+        exec: function(editor) {
+            clearLogsCommand();
+            updateViewWithSessions();
+        },
     });
 
     // add teh export command
@@ -61,7 +69,7 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
     });
     // add teh import command
     editor.commands.addCommand({
-        name: 'Export',
+        name: 'Import',
         bindKey: { win: 'Ctrl-I',  mac: 'Command-I' },
         exec: function(editor) {
             alert('TODO: implement import');
@@ -71,21 +79,6 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
     // add teh beautify key command
     let beautify = require("ace/ext/beautify");
     editor.commands.addCommands(beautify.commands);
-
-    // TODO: show keyboard shortcuts openers:
-    // add command to show keybindings
-    // editor.commands.addCommand({
-    //     name: "showKeyboardShortcuts",
-    //     bindKey: { win: "Ctrl-Alt-h", mac: "Command-Alt-h" },
-    //     exec: function(editor) {
-    //         // lazy load keybinding menu extension
-    //         ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
-    //             module.init(editor);
-    //             editor.showKeyboardShortcuts()
-    //         })
-    //     }
-    // })
-    // editor.execCommand("showKeyboardShortcuts")
 
     // set configuration options
     editor.setOptions({

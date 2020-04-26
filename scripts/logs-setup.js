@@ -1,250 +1,170 @@
 
 /*
     handle the log window in the bottom left section of the screen
+
+    we intercept the result display's iframe console.logs (and warns / errors)
+
+    by injecting a script into the formatted final display html that overrides the iframe context's
+    console.log/warn/error to send a message to our outer window wiht the arguments instead
+
+    then we display them in our custom log window, this way logs from the
+    in browser editor dont get confused with normal developer console logs
 */
 
 
 let logWindow = document.getElementById('log-window');
-
 let logWindowMsgs = document.getElementById('log-window-messages');
+let logWindowTitleBar = document.getElementById("log-window-title-container");
+let resultDisplay = document.getElementById("result-display");
 
-const icon = 'highlight_off';
+const deleteLogIcon = 'highlight_off';
 
+// handle when user wants to delete a single message
 logWindow.addEventListener('click', (e) => {
-    if (e.target.innerText === icon) {
+    if (e.target.innerText === deleteLogIcon)
          logWindowMsgs.removeChild(e.target.parentElement);
-    }
- });
-
-// let iframe = document.getElementById('result-display');
-// console.log(iframe.contentWindow);
-
-
-// export let cons = {
-//     log (val) {
-//         addLog(String(val), 0);
-//     },
-//     warn (val) {
-//         addLog(String(val), 1);
-
-//     },
-//     error (val) {
-//         addLog(String(val), 2);
-//     }
-// };
-
-// export cons;
-
-// iframe.contentWindow.console = cons;
-// iframe.contentWindow.console.log = function(val) {
-//     console.log('HEHEEH');
-//     addLog(String(val), 0);
-// };
-// iframe.contentWindow.console.warn = function(val) {
-//     console.log('HEHEEH');
-//     addLog(String(val), 1);
-// };
-// iframe.contentWindow.console.error = function(val) {
-//     console.log('HEHEEH');
-//     addLog(String(val), 2);
-// };
-
-
-window.addEventListener("message", (event) => {
-
-    let sev = event.data.shift();
-
-    function obj2String (obj) {
-        if (Array.isArray(obj)) {
-            return `[ ${String(obj)} ]`;
-        }
-        if (typeof obj === 'object') {
-            return JSON.stringify(obj);
-        }
-        return String(obj);
-    }
-
-    addLog ( event.data.map( d => obj2String (d) ).join(' - '), sev );
-    // console.log(...event.data);
-
-    // console.log(event);
 });
 
+// prepare to receive a message from the iframe with the log arguments
+window.addEventListener("message", (event) => {
 
+    // first element is the severity
+    let severity = event.data.shift();
+
+    // parse obj to string
+    function obj2String (obj) {
+        if (Array.isArray(obj))
+            return `[ ${String(obj)} ]`;
+        else if (typeof obj === 'object')
+            return JSON.stringify(obj);
+        return String(obj);
+    }
+    // add a string representation to the log messages element
+    addLog ( event.data.map( d => obj2String (d) ).join(' - '), severity );
+});
 
 /*
+    adds a log elemnt to the messages list:
 
+    structure is:
 
-console.log("log in here");
-console.warn("warn in here");
-
-console.error("Some super long error\n that shoud take\n up severla\nlines");
-
-console.warn("another wwarning");
+    <div>
+        <span> the log text </span>
+        <i> the delete icon </i>
+    </div>
 */
-
-
-
 function addLog (logTxt, severity) {
     let msg = document.createElement('div');
-
-    let span = document.createElement('span');
-    span.innerText = logTxt;
-    msg.appendChild(span);
-    msg.className = 'log-message ';
-    if (severity === 0)
-        msg.className += 'log';
-    else if (severity === 1)
-        msg.className += 'warn';
-    else if (severity === 2)
-        msg.className += 'err';
-
     logWindowMsgs.appendChild(msg);
 
-    let closeIcon = document.createElement('i');
-    closeIcon.className = 'material-icons';
-    closeIcon.innerText = icon;
+    let span = document.createElement('span');
+    msg.appendChild(span);
+    let deleteIcon = document.createElement('i');
+    msg.appendChild(deleteIcon);
 
-    msg.appendChild(closeIcon);
+    msg.className = 'log-message ';
 
+    if      (severity === 0) msg.className += 'log';
+    else if (severity === 1) msg.className += 'warn';
+    else if (severity === 2) msg.className += 'err';
 
+    span.innerText = logTxt;
 
-
-
-    // <i id="log-window-toggle-info" class="material-icons">highlight_off</i>
+    deleteIcon.className = 'material-icons';
+    deleteIcon.innerText = deleteLogIcon;
 }
 
-
-
-
-function clearLogs () {
+// deletes all console messages
+export function clearLogs () {
     logWindowMsgs.innerHTML = '';
 }
 
+// set up the clear console button
 document.getElementById('log-window-clear').addEventListener('click', (event) => {
     clearLogs();
 });
 
+
+// set up the log window toggle
 let toggleButton = document.getElementById('log-window-toggle');
 toggleButton.addEventListener('click', (event) => {
-    // clearLogs();
     let isActive = logWindow.className.indexOf(' active') !== -1;
-
-    // toggleWrap should return true when wrap is enabled
     if (!isActive) {
-        // console.log('activating messages');
         toggleButton.className += " active";
         logWindow.className += " active"; // add the 'active' class
     }
     else{
-        // console.log('de- activating messages');
         toggleButton.className = toggleButton.className.replace(" active", ""); // remove the 'active' class
         logWindow.className = logWindow.className.replace(" active", ""); // remove the 'active' class
     }
 
-    // need to trigger resize or size of scrollable area in editor goes funky
-    // triggerWindowResizeEvent();
-    // document.dispatchEvent(new Event('resize'));
-    // console.log('resize');
-
-    // // call again after .5 second, jsut in case there was a transition (was also bugging out)
-    setTimeout( () => window.dispatchEvent(new Event('resize')) , 10);
+    // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
+    triggerWindowResizeEvent();
 });
 
-// let editorElement = document.getElementById('editor');
 
-
-// const resizeEvent = new Event('resize');
-
-// function triggerWindowResizeEvent () {
-//     document.dispatchEvent(new Event('resize'));
-// }
+function triggerWindowResizeEvent() {
+    setTimeout( () => window.dispatchEvent(new Event('resize')) , 10);
+}
 
 
 
-// for (let i = 0; i < 15; i++) {
-//     addLog(`log ${i}\nsome other stuff too`, Math.min(2, i));
-// }
+/*
+    handle resizing the console logs section by
+    clicking and dragging the title bar
+*/
 
+const maxHeight = .5;
 
-
-
-{/* <button id="log-window-min">_</button>
-<button id="log-window-close">X</button> */}
-
-
-
-
-
-
-
-
-
-const getResizeableElement = () => { return logWindowMsgs; };
-const getHandleElement = () => { return document.getElementById("log-window-title-container"); };
-
-// const maxPaneSize = 50;
-// getResizeableElement().style.setProperty('--max-height', `${maxPaneSize}%`);
-
-
-const setPaneWidth = (width) => {
-
-    width = Math.min(width, .5);
-    width = Math.floor(width * 100);
-    // console.log('setting height to: ' + width);
-//   getResizeableElement().style.setProperty('--resizeable-height', `${width}px`);
-  getResizeableElement().style.setProperty('--resizeable-height', `${width}%`);
-//   document.dispatchEvent(new Event('resize'));
-  setTimeout( () => window.dispatchEvent(new Event('resize')) , 10);
-    // console.log('resize');
-
+const setConsoleHeight = (height) => {
+    logWindowMsgs.style.setProperty('--resizeable-height', `${Math.floor(Math.min(height, maxHeight) * 100)}%`);
+    triggerWindowResizeEvent();
 };
 
+// setConsoleHeight(.3);
 
-// setPaneWidth(document.body.clientHeight * .3);
-setPaneWidth(.3);
-
-const getPaneWidth = () => {
-  const pxWidth = getComputedStyle(getResizeableElement()).getPropertyValue('--resizeable-height');
-  return parseInt(pxWidth, 10) / 100.0;
+const getConsoleHeight = () => {
+    const curMaxHeight = getComputedStyle(logWindowMsgs).getPropertyValue('--resizeable-height');
+    return parseInt(curMaxHeight, 10) / 100.0;
 };
 
 const startDragging = (event) => {
-  event.preventDefault();
-//   const host = getResizeableElement();
-//   const startingPaneWidth = getPaneWidth();
-//   console.log("starting pane: " + startingPaneWidth);
-//   const xOffset = event.pageY;
+    event.preventDefault();
 
-//   console.log(xOffset);
+    const mouseDragHandler = (moveEvent) => {
+        moveEvent.preventDefault();
+        const primaryButtonPressed = moveEvent.buttons === 1;
 
-  const mouseDragHandler = (moveEvent) => {
-    moveEvent.preventDefault();
-    const primaryButtonPressed = moveEvent.buttons === 1;
-    if (!primaryButtonPressed) {
-    //   setPaneWidth(Math.min(getPaneWidth(), maxPaneSize));
-      setPaneWidth(getPaneWidth());
-      document.removeEventListener('pointermove', mouseDragHandler);
-    //   console.log('worng button');
+        if (!primaryButtonPressed) {
+            setConsoleHeight(getConsoleHeight());
 
+            document.removeEventListener('pointermove', mouseDragHandler);
+            // restore result display pointer events to normal
+            resultDisplay.style.pointerEvents = "auto";
+            // restore mouse cursor to normal
+            logWindowMsgs.style.cursor = 'auto';
+            return;
+        }
 
+        function clamp01 (v) {
+            return Math.min(Math.max(v, 0), 1);
+        }
 
-      document.getElementById("result-display").style.pointerEvents = "auto";
-      return;
-    }
+        // calculate the mouse positions y percentage, and set the max height to that
+        let percent = 1.0 - clamp01(moveEvent.pageY / document.body.clientHeight);
 
-    let percent = 1.0 - Math.max(Math.min((moveEvent.pageY / document.body.clientHeight), 1), 0);
+        setConsoleHeight(percent);
+    };
 
-    // let h = (xOffset - moveEvent.pageY) + startingPaneWidth;
-    // console.log(moveEvent.pageY / document.body.clientHeight);
-    // const paneOriginAdjustment = 'left' === 'right' ? 1 : -1;
-    // setPaneWidth(h);
-    setPaneWidth(percent);
-  };
-//   const remove =
-  document.addEventListener('pointermove', mouseDragHandler);
+    document.addEventListener('pointermove', mouseDragHandler);
 
-  document.getElementById("result-display").style.pointerEvents = "none";
+    // temporarily disable pointer events for the result display
+    // if we dont do this, the drag event doesnt trigger if the cursor
+    // is dragging over teh result display iframe
+    resultDisplay.style.pointerEvents = "none";
+
+    // change the cursor for the whole log window to resize cursor
+    logWindowMsgs.style.cursor = 'ns-resize';
 };
 
-getHandleElement().addEventListener('mousedown', startDragging);
+logWindowTitleBar.addEventListener('mousedown', startDragging);
