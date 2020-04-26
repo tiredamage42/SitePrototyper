@@ -1,4 +1,25 @@
 /*
+
+    Site Prototyper (an in-browser html/css/js editor)
+    Copyright (C) 2020  Andres Gomez
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+
+/*
     handle setting up the menu DOM elements for the editor
 
     (AKA the menu above the code editor on the
@@ -6,7 +27,7 @@
 */
 
 import { themes, defualtTheme, defualtFontSize } from './editor-setup.js';
-import { setElementActive } from './dom-utils.js';
+import { setElementActive, getElementActive, addChildToElement } from './dom-utils.js';
 
 // initialize a selector, then programatically 'select' the default value
 function initSelector (id, collection, defaultOption, onSelect) {
@@ -17,7 +38,7 @@ function initSelector (id, collection, defaultOption, onSelect) {
     collection.forEach((c) => {
 
         // crete an option element
-        let option = document.createElement("option");
+        let option = addChildToElement(selector, 'option');
 
         // set the value and display text to the collection element
         option.value = c;
@@ -26,9 +47,6 @@ function initSelector (id, collection, defaultOption, onSelect) {
         // define if teh option element should have the 'selected' attribute
         if (c === defaultOption)
             option.setAttribute('selected', '');
-
-        // add option to the selector
-        selector.appendChild(option);
     });
 
     // initilalize change callback
@@ -52,7 +70,7 @@ export function initializeWrapButton (toggleWrap) {
     btn.addEventListener('click', (evt) => setElementActive(btn, toggleWrap()) );
 
     // wrap defaults to true
-    btn.className += " active";
+    setElementActive(btn, true);
     toggleWrap(true);
 }
 
@@ -79,31 +97,18 @@ export function initializeKeyboardShortcutShower (shortcuts, populateShortcut) {
 
     // initialize the event listener
     btn.addEventListener('click', (evt) => {
-        let isActive = btn.className.indexOf(' active') !== -1;
+        let isActive = getElementActive(btn);
         setElementActive(keyboardShortcutsView, !isActive);
         setElementActive(btn, !isActive);
     });
 
     shortcuts.forEach((sc, i) => {
-
-        let d = document.createElement('div');
-        d.className = 'keyboard-shortcut';
-
-        function createSpanDiv (className) {
-            let s = document.createElement('span');
-            s.className = className;
-            d.appendChild(s);
-            return s;
-        }
-
-        let s1 = createSpanDiv ('keyboard-shortcut-name');
-        let s2 = createSpanDiv ('keyboard-shortcut-bindKey');
-
+        let d = addChildToElement(keyboardShortcutsView, 'div', 'keyboard-shortcut');
+        let s1 = addChildToElement (d, 'span', 'keyboard-shortcut-name');
+        let s2 = addChildToElement (d, 'span', 'keyboard-shortcut-bindKey');
         populateShortcut(sc, i, s1, s2);
-        keyboardShortcutsView.appendChild(d);
     });
 }
-
 
 // language select (html, css, or js) is set up with "tabs" buttons
 export function initializeLanguageSelection (languages, onLanguageSelect) {
@@ -112,20 +117,14 @@ export function initializeLanguageSelection (languages, onLanguageSelect) {
 
     languages.forEach( (l, i) => {
         // for each language specified, create a tab button
-        let btn = document.createElement('button');
-
-        // add it to the container
-        container.appendChild(btn);
-
-        // add teh tablinks class
-        btn.className = "tablinks";
+        let btn = addChildToElement(container, 'button', 'tablinks');
 
         // set the button text to the language name
         btn.innerText = l;
 
         // the first language is teh default active one
         if (i == 0)
-            btn.className += " active";
+            setElementActive(btn, true);
     });
 
     // initialize the event listener for button clicks
@@ -136,11 +135,10 @@ export function initializeLanguageSelection (languages, onLanguageSelect) {
             // call teh callback with the language (stored in 'innerText')
             onLanguageSelect(e.target.innerText);
 
-            // unselect all the tabs in teh container (remove the 'active' class)
-            Array.from(container.children).forEach(b => b.className = b.className.replace(" active", "") );
+            // unselect all the tabs in teh container
+            Array.from(container.children).forEach(b => setElementActive(b, false) );
 
-            // add teh active class to the selected language tab button
-            e.target.className += " active";
+            setElementActive(e.target, true);
         }
     });
 

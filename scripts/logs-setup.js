@@ -1,3 +1,26 @@
+/*
+
+    Site Prototyper (an in-browser html/css/js editor)
+    Copyright (C) 2020  Andres Gomez
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+
+
+
 
 /*
     handle the log window in the bottom left section of the screen
@@ -12,18 +35,11 @@
 */
 
 import { intiializeResizableElement, triggerWindowResizeEvent } from './resize-elements.js';
+import { setElementActive, getElementActive, addChildToElement } from './dom-utils.js';
 
-import { setElementActive } from './dom-utils.js';
 
 let logWindow = document.getElementById('log-window');
-
-function logWindowActive () {
-    return logWindow.className.indexOf(' active') !== -1;
-}
-
-
 let logWindowMsgs = document.getElementById('log-window-messages');
-// let logWindowTitleBar = document.getElementById("log-window-title-container");
 
 const deleteLogIcon = 'highlight_off';
 
@@ -61,24 +77,15 @@ window.addEventListener("message", (event) => {
         <i> the delete icon </i>
     </div>
 */
+const severitySuffixes = [ 'log', 'warn', 'err' ];
 function addLog (logTxt, severity) {
-    let msg = document.createElement('div');
-    logWindowMsgs.appendChild(msg);
 
-    let span = document.createElement('span');
-    msg.appendChild(span);
-    let deleteIcon = document.createElement('i');
-    msg.appendChild(deleteIcon);
+    let msg = addChildToElement(logWindowMsgs, 'div', 'log-message ' + severitySuffixes[severity]);
 
-    msg.className = 'log-message ';
-
-    if      (severity === 0) msg.className += 'log';
-    else if (severity === 1) msg.className += 'warn';
-    else if (severity === 2) msg.className += 'err';
-
+    let span = addChildToElement(msg, 'span');
     span.innerText = logTxt;
 
-    deleteIcon.className = 'material-icons';
+    let deleteIcon = addChildToElement(msg, 'i', 'material-icons');
     deleteIcon.innerText = deleteLogIcon;
 }
 
@@ -94,14 +101,11 @@ document.getElementById('log-window-clear').addEventListener('click', (event) =>
 // set up the log window toggle
 let toggleButton = document.getElementById('log-window-toggle');
 
-
-
-
 export function toggleConsole (active) {
 
     // just toggle to opposite if active parameter is not supplied
     if (active === undefined)
-        active = !logWindowActive();
+        active = !getElementActive(logWindow);
 
     setElementActive (toggleButton, active);
     setElementActive (logWindow, active);

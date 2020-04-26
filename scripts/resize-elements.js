@@ -1,3 +1,24 @@
+/*
+
+    Site Prototyper (an in-browser html/css/js editor)
+    Copyright (C) 2020  Andres Gomez
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+
 
 /*
     handle resizing dom elements
@@ -22,9 +43,11 @@ export function intiializeResizableElement (resizeElement, dragElement, initialS
         triggerWindowResizeEvent();
     };
 
-    const startDragging = (event) => {
+    const startDragging = (clickEvent) => {
+        if (clickEvent.buttons !== 1)
+            return;
 
-        event.preventDefault();
+        clickEvent.preventDefault();
 
         function stopDrag () {
             document.removeEventListener('pointermove', mouseDragHandler);
@@ -36,11 +59,11 @@ export function intiializeResizableElement (resizeElement, dragElement, initialS
             resizeElement.style.cursor = 'auto';
         }
 
-        const mouseDragHandler = (moveEvent) => {
-            moveEvent.preventDefault();
+        const mouseDragHandler = (event) => {
+            event.preventDefault();
 
             // calculate the mouse positions percentage, and set the max size to that
-            let t = isVertical ? (moveEvent.pageY / document.body.clientHeight) : (moveEvent.pageX / document.body.clientWidth)
+            let t = isVertical ? (event.pageY / document.body.clientHeight) : (event.pageX / document.body.clientWidth)
 
             // clamp to 0,1 range and invert
             let percent = 1.0 - Math.min(Math.max(t, 0), 1);
@@ -48,7 +71,7 @@ export function intiializeResizableElement (resizeElement, dragElement, initialS
             setElementSize(percent);
 
             // if we let go of the button
-            if (moveEvent.buttons !== 1) {
+            if (event.buttons !== 1) {
                 stopDrag();
                 return;
             }
