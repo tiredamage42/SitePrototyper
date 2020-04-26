@@ -4,6 +4,9 @@
         <title>Site Prototyper</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <!-- out styles -->
         <link rel="stylesheet" type="text/css" href="style.css" />
 
@@ -12,19 +15,20 @@
     <body>
 
         <div id="site-container">
-            <div id="log-window">
 
-                <button id="log-window-min">_</button>
-                <button id="log-window-close">X</button>
+            <div id="top-half">
 
-            </div>
+
 
             <!-- display the written html, css, and js. -->
             <!-- left thand side of the screen -->
             <iframe id="result-display"> </iframe>
 
+
             <!-- right hand side of the screen -->
+
             <div id="code-area">
+
 
                 <div id="menus">
 
@@ -32,15 +36,19 @@
 
                         <button class="tablinks" id="file-import">Import File</button>
                         <button class="tablinks" id="file-export">Export Files</button>
-                        <button class="tablinks" id="show-key-shortcuts">Show Keyboard Shortcuts</button>
 
-                        <!-- <div id="language-select" class="tab"></div>
 
-                        <label for="font-size-select">Font Size:</label>
-                        <select name="font-size-select" id="font-size-select"></select>
+                        <button class="tablinks" id="show-key-shortcuts" title="Show Keyboard Shortcuts"><i class="material-icons">keyboard</i></button>
+                        <!-- <button class="tablinks" id="show-key-shortcuts">Show Keyboard Shortcuts</button> -->
 
-                        <label for="theme-select">Theme:</label>
-                        <select name="theme-select" id="theme-select"></select> -->
+                        <button class="tablinks" id="log-window-toggle">
+                            <i id="log-window-toggle-info" class="material-icons">info</i>
+                            <i id="log-window-toggle-warning" class="material-icons">warning</i>
+                            <i id="log-window-toggle-error" class="material-icons">error</i>
+                        </button>
+
+
+
 
                     </div>
 
@@ -66,7 +74,40 @@
                     <div id="keyboard-shortcuts"></div>
                 </div>
 
+
             </div>
+
+        </div>
+        <div id="bottom-half">
+
+
+
+
+
+
+
+            <div id="log-window">
+                <!-- <div id="log-window-handle"></div> -->
+                    <div id="log-window-title-container">
+
+                        <div id="log-window-title">
+
+                            <p></p>
+                            <p>Console</p>
+                            <div id="log-window-buttons-container">
+                                <button class="log-window-button" id="log-window-clear">Clear Logs</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="log-window-messages">
+                    </div>
+
+
+                </div>
+
+            </div>
+
 
         </div>
         <!-- ace dependencies -->

@@ -1,3 +1,5 @@
+// import { cons } from './logs-setup.js';
+
 /*
     handle teh iframe element that displays the finished product
     of the html, css, and js code
@@ -23,9 +25,46 @@ function assertFormatting (htmlString, cssString, jsString) {
         links[i].setAttribute('target', '_base');
 
 
+    let consoleOverrideString = `<script>
+
+        // var postMessageTemp = window.postMessage;
+        // window.postMessage = function(message, targetOrigin, transfer)
+        // {
+        //     postMessageTemp(JSON.parse(JSON.stringify(message)), targetOrigin, transfer)
+        // };
+
+        function postMessage (args, type) {
+            Array.prototype.unshift.call(args, type);
+            window.parent.postMessage(Array.from(args), '*');
+            // window.parent.postMessage(JSON.parse(JSON.stringify(args)), '*');
+        }
+
+        // if(window.console && console.log){
+        //     let oldLog = console.log;
+        //     console.log = function(){
+
+        //         postMessage (arguments, 0);
+        //     }
+        // }
+        // if(window.console && console.warn){
+        //     console.warn = function(){
+        //         postMessage (arguments, 1);
+        //     }
+        // }
+        // if(window.console && console.error){
+        //     console.error = () => postMessage (arguments, 2);
+        // }
+
+        // let oldLog = console.log;
+        console.log = function() { postMessage (arguments, 0); };
+        console.warn = function() { postMessage (arguments, 1); };
+        console.error = function() { postMessage (arguments, 2); };
+
+        </script>
+    `;
 
     // reconstruct html as string
-    let head = `<head>${htmlNode.getElementsByTagName('head')[0].innerHTML}<style>${cssString}</style></head>`;
+    let head = `<head>${htmlNode.getElementsByTagName('head')[0].innerHTML}<style>${cssString}</style>${consoleOverrideString}</head>`;
     let body = `<body>${htmlNode.getElementsByTagName('body')[0].innerHTML}<script>${jsString}</script></body>`;
     let final = `<html>${head}${body}</html>`;
     return final;
@@ -37,4 +76,7 @@ let resultDisplay = document.getElementById("result-display");
 export function updateDisplay (htmlString, cssString, jsString) {
     resultDisplay.srcdoc = assertFormatting (htmlString, cssString, jsString);
     // console.log(resultDisplay.srcdoc);
+
+    // resultDisplay.contentWindow.console = cons;
+
 }

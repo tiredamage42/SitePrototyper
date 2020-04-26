@@ -89,7 +89,7 @@ const skipShortcuts = [
 // let shortcutsWithBindings = Object.values(editor.commands.commands).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
 let shortcutsWithBindings = Object.values(editor.commands.byName).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
 
-console.log(shortcutsWithBindings);
+// console.log(shortcutsWithBindings);
 initializeKeyboardShortcutShower (shortcutsWithBindings, (sc, i, s1, s2) => {
 
     s1.innerText = `${sc.name}:`;
