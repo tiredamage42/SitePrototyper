@@ -1,8 +1,20 @@
 
 import { initializeEditor } from './scripts/editor-setup.js';
-import { initializeThemeSelector, initializeFontSizeSelector, initializeWrapButton, initializeLanguageSelection } from './scripts/menu-setup.js';
+import { initializeKeyboardShortcutShower, initializeThemeSelector, initializeFontSizeSelector, initializeWrapButton, initializeLanguageSelection } from './scripts/menu-setup.js';
 import { updateDisplay } from './scripts/result-display.js';
 
+
+
+
+
+
+
+
+
+
+
+
+import {  } from  './scripts/logs-setup.js';
 const defaultHTML = `
 <html>
     <head>
@@ -62,3 +74,57 @@ initializeWrapButton ( (wrap) => {
 
 initializeLanguageSelection (Object.keys(name2session), (language) => editor.setSession(name2session[language]) );
 
+
+// shortcuts that didnt work for me
+const skipShortcuts = [
+    'showSettingsMenu',
+    'toggleParentFoldWidget',
+    'toggleFoldWidget',
+    'goToNextError',
+    'openCommandPallete'
+];
+
+
+
+// let shortcutsWithBindings = Object.values(editor.commands.commands).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
+let shortcutsWithBindings = Object.values(editor.commands.byName).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
+
+console.log(shortcutsWithBindings);
+initializeKeyboardShortcutShower (shortcutsWithBindings, (sc, i, s1, s2) => {
+
+    s1.innerText = `${sc.name}:`;
+
+    let mac = sc.bindKey.mac;
+    if (mac)
+        mac = sc.bindKey.mac.replace(/Command/g, 'Cmd');
+
+        s2.innerText = `Mac: ${mac || sc.bindKey.win}\nWin: ${sc.bindKey.win || mac}`;
+
+    // console.log(sc.name);
+    // console.log(sc.bindKey);
+});
+    // shortcuts.forEach((sc, i) => {
+    //     let p = document.createElement('p');
+    //     populateShortcut(sc, i, p);
+    //     keyboardShortcutsView.appendChild(p);
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// iframeWindow.console.log = function(val) {
+//     var divId = document.getElementById("console");
+//     var span = document.createElement("span");
+//     span.appendChild(document.createTextNode(val));
+//     divId.appendChild(span);
+// };

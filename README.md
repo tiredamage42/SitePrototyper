@@ -13,10 +13,11 @@
 - `Ctrl-I / Cmd-I` : Import File
 - `Ctrl-E / Cmd-E` : Export Files
 - Show keyboard shortcuts display hotkey on main page
-- Add Visible Options (Font, Text Size, Etc...)
+- Option to switch font
 - Finalize CSS layout and color scheme to make it look nice.
 - Deployment To Github Repo / Pages
 - Import/Export from/to git
 - Display Console Logs Section
-- Fix 'undo' When switching language sessions
 - Fix 'local' links that shouldnt open in a new tab
+- ~~Add Visible Options (Text Size, Etc...)~~
+- ~~Fix 'undo' When switching language sessions~~

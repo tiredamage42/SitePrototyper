@@ -27,6 +27,10 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
     session_css.setValue(defaultCSS);
     session_js.setValue(defaultJS);
 
+    session_html.setUndoManager(new ace.UndoManager());
+    session_css.setUndoManager(new ace.UndoManager());
+    session_js.setUndoManager(new ace.UndoManager());
+
     // update the result display with the default values
     onUpdateView (defaultHTML, defaultCSS, defaultJS);
 
@@ -70,17 +74,17 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
 
     // TODO: show keyboard shortcuts openers:
     // add command to show keybindings
-    editor.commands.addCommand({
-        name: "showKeyboardShortcuts",
-        bindKey: { win: "Ctrl-Alt-h", mac: "Command-Alt-h" },
-        exec: function(editor) {
-            // lazy load keybinding menu extension
-            ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
-                module.init(editor);
-                editor.showKeyboardShortcuts()
-            })
-        }
-    })
+    // editor.commands.addCommand({
+    //     name: "showKeyboardShortcuts",
+    //     bindKey: { win: "Ctrl-Alt-h", mac: "Command-Alt-h" },
+    //     exec: function(editor) {
+    //         // lazy load keybinding menu extension
+    //         ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
+    //             module.init(editor);
+    //             editor.showKeyboardShortcuts()
+    //         })
+    //     }
+    // })
     // editor.execCommand("showKeyboardShortcuts")
 
     // set configuration options

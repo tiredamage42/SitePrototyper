@@ -12,6 +12,12 @@
     <body>
 
         <div id="site-container">
+            <div id="log-window">
+
+                <button id="log-window-min">_</button>
+                <button id="log-window-close">X</button>
+
+            </div>
 
             <!-- display the written html, css, and js. -->
             <!-- left thand side of the screen -->
@@ -20,21 +26,45 @@
             <!-- right hand side of the screen -->
             <div id="code-area">
 
-                <!-- the settings menu -->
-                <div id="menu-1">
-                    <div id="language-select" class="tab"></div>
+                <div id="menus">
 
-                    <label for="font-size-select">Font Size:</label>
-                    <select name="font-size-select" id="font-size-select"></select>
+                    <div id="menu-0">
 
-                    <label for="theme-select">Theme:</label>
-                    <select name="theme-select" id="theme-select"></select>
+                        <button class="tablinks" id="file-import">Import File</button>
+                        <button class="tablinks" id="file-export">Export Files</button>
+                        <button class="tablinks" id="show-key-shortcuts">Show Keyboard Shortcuts</button>
 
-                    <button class="tablinks" id="wrap-button">Wrap</button>
+                        <!-- <div id="language-select" class="tab"></div>
+
+                        <label for="font-size-select">Font Size:</label>
+                        <select name="font-size-select" id="font-size-select"></select>
+
+                        <label for="theme-select">Theme:</label>
+                        <select name="theme-select" id="theme-select"></select> -->
+
+                    </div>
+
+
+                    <!-- the settings menu -->
+                    <div id="menu-1">
+                        <div id="language-select" class="tab"></div>
+
+                        <label for="font-size-select">Font Size:</label>
+                        <select name="font-size-select" id="font-size-select"></select>
+
+                        <label for="theme-select">Theme:</label>
+                        <select name="theme-select" id="theme-select"></select>
+
+                        <button class="tablinks" id="wrap-button">Wrap</button>
+                    </div>
                 </div>
 
-                <!-- the code editor -->
-                <div id="editor"></div>
+                <div id="editor-container">
+                    <!-- the code editor -->
+                    <div id="editor"></div>
+
+                    <div id="keyboard-shortcuts"></div>
+                </div>
 
             </div>
 
