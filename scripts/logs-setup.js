@@ -11,16 +11,24 @@
     in browser editor dont get confused with normal developer console logs
 */
 
+import { intiializeResizableElement, triggerWindowResizeEvent } from './resize-elements.js';
+
+import { setElementActive } from './dom-utils.js';
 
 let logWindow = document.getElementById('log-window');
+
+function logWindowActive () {
+    return logWindow.className.indexOf(' active') !== -1;
+}
+
+
 let logWindowMsgs = document.getElementById('log-window-messages');
-let logWindowTitleBar = document.getElementById("log-window-title-container");
-let resultDisplay = document.getElementById("result-display");
+// let logWindowTitleBar = document.getElementById("log-window-title-container");
 
 const deleteLogIcon = 'highlight_off';
 
 // handle when user wants to delete a single message
-logWindow.addEventListener('click', (e) => {
+logWindowMsgs.addEventListener('click', (e) => {
     if (e.target.innerText === deleteLogIcon)
          logWindowMsgs.removeChild(e.target.parentElement);
 });
@@ -78,37 +86,30 @@ function addLog (logTxt, severity) {
 export function clearLogs () {
     logWindowMsgs.innerHTML = '';
 }
-
 // set up the clear console button
 document.getElementById('log-window-clear').addEventListener('click', (event) => {
     clearLogs();
 });
 
-function toggleConsole (active) {
-    if (active) {
-        toggleButton.className += " active";
-        logWindow.className += " active"; // add the 'active' class
-    }
-    else {
-        toggleButton.className = toggleButton.className.replace(" active", ""); // remove the 'active' class
-        logWindow.className = logWindow.className.replace(" active", ""); // remove the 'active' class
-    }
+// set up the log window toggle
+let toggleButton = document.getElementById('log-window-toggle');
+
+
+
+
+export function toggleConsole (active) {
+
+    // just toggle to opposite if active parameter is not supplied
+    if (active === undefined)
+        active = !logWindowActive();
+
+    setElementActive (toggleButton, active);
+    setElementActive (logWindow, active);
+
     // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
     triggerWindowResizeEvent();
 }
-// set up the log window toggle
-let toggleButton = document.getElementById('log-window-toggle');
-toggleButton.addEventListener('click', (event) => {
-    let isActive = logWindow.className.indexOf(' active') !== -1;
-    toggleConsole (!isActive);
-
-});
-
-
-function triggerWindowResizeEvent() {
-    setTimeout( () => window.dispatchEvent(new Event('resize')) , 10);
-}
-
+toggleButton.addEventListener('click', (event) => toggleConsole () );
 
 
 /*
@@ -117,63 +118,15 @@ function triggerWindowResizeEvent() {
 */
 
 const maxHeight = .5;
-
-const setConsoleHeight = (height) => {
-    logWindowMsgs.style.setProperty('--resizeable-height', `${Math.floor(Math.min(height, maxHeight) * 100)}%`);
-    triggerWindowResizeEvent();
-};
+const initialHeight = .15;
 
 
-
-const getConsoleHeight = () => {
-    const curMaxHeight = getComputedStyle(logWindowMsgs).getPropertyValue('--resizeable-height');
-    return parseInt(curMaxHeight, 10) / 100.0;
-};
-
-const startDragging = (event) => {
-    event.preventDefault();
-
-    const mouseDragHandler = (moveEvent) => {
-        moveEvent.preventDefault();
-
-
-
-        function clamp01 (v) {
-            return Math.min(Math.max(v, 0), 1);
-        }
-
-        // calculate the mouse positions y percentage, and set the max height to that
-        let percent = 1.0 - clamp01(moveEvent.pageY / document.body.clientHeight);
-
-        setConsoleHeight(percent);
-
-
-        const primaryButtonPressed = moveEvent.buttons === 1;
-
-        if (!primaryButtonPressed) {
-            // setConsoleHeight(getConsoleHeight());
-
-            document.removeEventListener('pointermove', mouseDragHandler);
-            // restore result display pointer events to normal
-            resultDisplay.style.pointerEvents = "auto";
-            // restore mouse cursor to normal
-            logWindowMsgs.style.cursor = 'auto';
-            return;
-        }
-    };
-
-    document.addEventListener('pointermove', mouseDragHandler);
-
-    // temporarily disable pointer events for the result display
-    // if we dont do this, the drag event doesnt trigger if the cursor
-    // is dragging over teh result display iframe
-    resultDisplay.style.pointerEvents = "none";
-
-    // change the cursor for the whole log window to resize cursor
-    logWindowMsgs.style.cursor = 'ns-resize';
-};
-
-logWindowTitleBar.addEventListener('mousedown', startDragging);
-
-setConsoleHeight(.15);
+intiializeResizableElement(
+    logWindowMsgs,
+    document.getElementById('log-window-resizer-click-area'),
+    initialHeight, maxHeight, true
+);
 toggleConsole (true);
+
+
+

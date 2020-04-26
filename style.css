@@ -1,13 +1,21 @@
 
+:root {
+    --dark-gray:rgb(40, 40, 40);
+    --light-gray: rgb(60, 60, 60);
+    --hover-color: rgb(100,100,100);
+    --font-color:#ccc;
+    --select-blue: rgb(82, 112, 165);
+
+    --resize-click-area-size: 10px;
+    --resize-click-area-offset: -5px;
+}
+
 body {
     margin: 0;
-    background-color: darkgrey;
 }
 
 /* contains both the rendered product column and the coding area */
 #site-container {
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -23,69 +31,153 @@ body {
 
 /* where the product is actually rendered */
 #result-display {
-    background-color: white;
     flex: 1;
-    margin: 0;
-    padding: 0;
     border: 0;
 }
 
+.area-resizer {
+    position: relative;
+}
+.area-resizer-click-area {
+    position: absolute;
+    z-index: 10;
+    /* background-color: rgba(0,0,255,.5); */
+}
+.area-resizer-click-area-horizontal {
+    width: var(--resize-click-area-size);
+    left: var(--resize-click-area-offset);;
+
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+}
+.area-resizer-click-area-vertical {
+    height: var(--resize-click-area-size);
+    top: var(--resize-click-area-offset);;
+    left: 0;
+    right: 0;
+    cursor: ns-resize;
+}
+
+
+
 /* the coding area, including menu */
 #code-area {
-    flex: 1;
+    min-width: 25%;
+    width: 99999px;
+    --resizeable-width: 33%;
+    max-width: var(--resizeable-width);
     display: flex;
     flex-flow: column;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--font-color);
+    border-left: 1;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+
+.tablinks {
+
+    border: 1px solid var(--font-color);
+    border-top: 0;
+    border-bottom: 0;
+
+    color: var(--font-color);
+
+    background-color: var(--light-gray);
+    padding: 5px 10px;
+    margin: 0;
+}
+
+.tablinks:hover{
+    background-color: var(--hover-color);
+}
+.tablinks.active{
+    background-color: var(--select-blue);
+}
+
+.menu-bar {
+    background-color: var(--dark-gray);
+    border: 1px solid var(--font-color);
+    color: var(--font-color);
+    border-left: 0;
 }
 
 #menu-0{
     display: flex;
     flex-direction: row-reverse;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
+    border-top: 0;
+    border-bottom: 0;
 }
-
 
 /* the displayed menu at the top of the coding area */
 #menu-1{
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    border: 2px solid #ccc;
-    background-color: #f1f1f1;
+    border-bottom: 0;
+    border-left:0;
+    border-right:0;
+}
+
+#menu-0 > .tablinks {
+    border-right: 0;
+}
+#menu-1 > #language-select > .tablinks {
+    border-left: 0;
+}
+
+#github-link i {
+    font-size: 18;
+}
+#menu-help > i {
+    font-size: 20;
+}
+
+#wrap-button {
+    border-right: 0;
+}
+
+#show-key-shortcuts i {
+    font-size: 20px;
 }
 
 
 #editor-container {
     display: flex;
     position: relative;
-    padding: 0;
-    margin: 0;
     flex-grow : 1;
 }
 
-/* the editor text input field (doesnt respond well to flexbox...) */
+/* the editor text input field */
 #editor {
     flex: 1;
 }
 
 
-  #keyboard-shortcuts {
-      overflow: auto;
-      z-index: 10;
+#keyboard-shortcuts {
+    overflow: auto;
+    z-index: 10;
     padding: 10px;
+    padding-top: 0;
+
     position: absolute;
     left: 20;
     right: 20;
-
-    background-color: rgba(100, 100, 100, 1);
-
     top: 0;
     bottom: 0;
-    opacity: 0;
-    visibility: hidden;
 
-  }
-  #keyboard-shortcuts.active {
+    background-color: var(--light-gray);
+    color: var(--font-color);
+
+    visibility: hidden;
+    opacity: 0;
+    transition: .5s;
+}
+#keyboard-shortcuts.active {
     visibility: visible;
     opacity: 1;
     transition: .5s;
@@ -93,9 +185,11 @@ body {
 .keyboard-shortcut {
     display: flex;
     justify-content: space-between;
-    border-style: solid;
     padding: 5px;
-    margin: 1px;
+    border: 1px solid var(--font-color);
+    /* border-bottom: 0; */
+    border-top: 0;
+    font-size: 15;
 }
 
 .keyboard-shortcut-name {
@@ -106,30 +200,16 @@ body {
 }
 
 
-
 #log-window {
-
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-
-    display: flex;
-    flex-direction: column;
-
-    margin: 0;
-    padding: 0;
-
-    width: 100%;
+    background-color: var(--dark-gray);
     max-height: 0%;
-
-    background-color: rgb(43, 42, 42);
-    overflow: hidden;
 }
 #log-window.active {
     max-height: 100%;
 }
 
-
 #log-window-messages {
+    /* just so it's always filling the max height */
     height: 99999px;
 
     --resizeable-height: 33%;
@@ -138,114 +218,82 @@ body {
     overflow: auto;
 }
 
-.log-window-button {
-    margin: 3;
-}
 
 #log-window-title {
     display: flex;
-
     justify-content: space-between;
-    background-color: rgb(91, 88, 88);
 
-    border-color: #ccc;
-    color: #ccc;
-
-    border-width: 1px;
-    border-style: solid;
+    color: var(--font-color);
+    border: 1px solid var(--font-color);
+    background-color: var(--light-gray);
 
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
 
-    cursor: ns-resize;
-
-
-
-
+    /* cursor: ns-resize; */
 }
 #log-window-title p {
     margin: 0;
     padding: 2px;
 }
+/* the clear logs button */
+.log-window-button {
+    border-right: 0;
+    border-top-right-radius: 7px;
+    /* z-index: 999999; */
+}
+
 
 .log-message {
     font-size: 14;
-    background-color: rgb(43, 42, 42);
 
-    border-style: solid;
-    border-width: 1px;
+    /* 0 alpha, transparent */
+    background-color: rgba(0,0,0,0);
+
+    border: 1px solid;
     border-top: 0;
-    margin: 0px;
+    border-left: 0;
+    border-right: 0;
+
     padding: 5px;
     padding-left: 10px;
     padding-right: 30px;
 
+    margin: 0px;
     margin-left: 0;
     margin-right: 0;
-    border-left: 0;
-    border-right: 0;
 
     display: flex;
     justify-content: space-between;
 }
-#show-key-shortcuts i {
-    font-size: 20px;
 
-}
-
+/* delete log message icon */
 .log-message > i {
-    color: darkgray;
+    color: var(--font-color);
     font-size: 18;
-
     cursor: pointer;
 }
 
 .log-message.err {
     color: red;
-    border-color: darkgray;
+    border-color: var(--font-color);
 }
 .log-message.warn {
     color: darkorange;
-    border-color: darkgray;
+    border-color: var(--font-color);
 }
 .log-message.log {
-    color: darkgray;
+    color: var(--font-color);
 }
 
-
-/* always show scrollbars */
-
+/* always show scrollbars for log window */
 #log-window-messages::-webkit-scrollbar {
-    -webkit-appearance: none;
     width: 7px;
-  }
-
+}
 #log-window-messages::-webkit-scrollbar-thumb {
     border-radius: 4px;
-    background-color: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-  }
-
-
-.tablinks{
-
-    border-color: #ccc;
-    background-color: inherit;
-    border-style: solid;
-
-    border-top: 0;
-    border-bottom: 0;
-    padding: 5px 10px;
-    margin: 0;
+    background-color: var(--font-color);
 }
-
-.tablinks:hover{
-    background-color: #ddd;
-}
-.tablinks.active{
-    background-color: rgb(162, 154, 154);
-}
-
 
 
 
@@ -255,9 +303,9 @@ body {
 #log-window-toggle .material-icons {
     font-size: 15;
 }
-#log-window-toggle-info {
+/* #log-window-toggle-info {
 
-}
+} */
 #log-window-toggle-warning {
     color:darkorange;
 }

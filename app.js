@@ -3,8 +3,9 @@ import { initializeEditor } from './scripts/editor-setup.js';
 import { initializeKeyboardShortcutShower, initializeThemeSelector, initializeFontSizeSelector, initializeWrapButton, initializeLanguageSelection } from './scripts/menu-setup.js';
 import { updateDisplay } from './scripts/result-display.js';
 
-import { clearLogs } from  './scripts/logs-setup.js';
+import { toggleConsole, clearLogs } from  './scripts/logs-setup.js';
 
+import { intiializeResizableElement } from './scripts/resize-elements.js';
 
 const defaultHTML = `
 <html>
@@ -53,7 +54,7 @@ btn.addEventListener('click', (e) => {
 });
 `;
 
-let { editor, name2session } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay, clearLogs);
+let { editor, name2session } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay, clearLogs, toggleConsole);
 
 initializeThemeSelector ( (theme) => editor.setTheme(`ace/theme/${theme}`) );
 
@@ -92,5 +93,10 @@ initializeKeyboardShortcutShower (shortcutsWithBindings, (shortcut, i, s1, s2) =
         mac = shortcut.bindKey.mac.replace(/Command/g, 'Cmd');
 
     s2.innerText = `Mac: ${mac || shortcut.bindKey.win}\nWin: ${shortcut.bindKey.win || mac}`;
-
 });
+
+intiializeResizableElement(
+    document.getElementById('code-area'),
+    document.getElementById('code-area-resizer-click-area'),
+    .5, .75
+);

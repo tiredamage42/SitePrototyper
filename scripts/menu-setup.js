@@ -6,6 +6,7 @@
 */
 
 import { themes, defualtTheme, defualtFontSize } from './editor-setup.js';
+import { setElementActive } from './dom-utils.js';
 
 // initialize a selector, then programatically 'select' the default value
 function initSelector (id, collection, defaultOption, onSelect) {
@@ -47,13 +48,8 @@ export function initializeWrapButton (toggleWrap) {
     let btn = document.getElementById('wrap-button');
 
     // initialize the event listener
-    btn.addEventListener('click', (evt) => {
-        // toggleWrap should return true when wrap is enabled
-        if (toggleWrap())
-            btn.className += " active"; // add the 'active' class
-        else
-            btn.className = btn.className.replace(" active", ""); // remove the 'active' class
-    });
+    // toggleWrap should return true when wrap is enabled
+    btn.addEventListener('click', (evt) => setElementActive(btn, toggleWrap()) );
 
     // wrap defaults to true
     btn.className += " active";
@@ -64,7 +60,6 @@ export function initializeWrapButton (toggleWrap) {
 export function initializeFileImport (onFileReceived) {
     // initialize the event listener
     document.getElementById('file-import').addEventListener('click', (evt) => {
-
         onFileReceived (textFromFile);
     });
 }
@@ -85,16 +80,8 @@ export function initializeKeyboardShortcutShower (shortcuts, populateShortcut) {
     // initialize the event listener
     btn.addEventListener('click', (evt) => {
         let isActive = btn.className.indexOf(' active') !== -1;
-
-        // toggleWrap should return true when wrap is enabled
-        if (!isActive) {
-            keyboardShortcutsView.className += " active";
-            btn.className += " active"; // add the 'active' class
-        }
-        else{
-            keyboardShortcutsView.className = keyboardShortcutsView.className.replace(" active", ""); // remove the 'active' class
-            btn.className = btn.className.replace(" active", ""); // remove the 'active' class
-        }
+        setElementActive(keyboardShortcutsView, !isActive);
+        setElementActive(btn, !isActive);
     });
 
     shortcuts.forEach((sc, i) => {

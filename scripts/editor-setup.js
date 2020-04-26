@@ -11,7 +11,7 @@ export const defualtFontSize = 12;
 export const defualtTheme = 'tomorrow_night_eighties';
 
 // initialize an ace editor, and start 3 sessions for html, css, js
-export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand) {
+export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand, toggleConsoleCommand) {
     // update the result display with the default values
     onUpdateView (defaultHTML, defaultCSS, defaultJS);
 
@@ -56,6 +56,15 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         exec: function(editor) {
             clearLogsCommand();
             updateViewWithSessions();
+        },
+    });
+
+    // add teh update view command
+    editor.commands.addCommand({
+        name: 'Toggle Console',
+        bindKey: { win: 'Ctrl-Shift-C',  mac: 'Command-Shift-C' },
+        exec: function(editor) {
+            toggleConsoleCommand();
         },
     });
 

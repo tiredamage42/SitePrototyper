@@ -6,6 +6,7 @@
 
         <!-- for icons -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <script src="https://kit.fontawesome.com/00649e41cc.js" crossorigin="anonymous"></script>
 
         <!-- our styles -->
         <link rel="stylesheet" type="text/css" href="style.css" />
@@ -23,12 +24,26 @@
                 <!-- left thand side of the screen -->
                 <iframe id="result-display"> </iframe>
 
+                <div class="area-resizer">
+                    <div class="area-resizer-click-area area-resizer-click-area-horizontal" id="code-area-resizer-click-area"></div>
+                </div>
+
                 <!-- right hand side of the screen -->
                 <div id="code-area">
 
-                    <div id="menus">
+
+                    <div id="menus" class="menu-bar">
 
                         <div id="menu-0">
+
+                            <button class="tablinks" id="github-link" title="Check Us Out On Github!" onclick="window.open('https://github.com/tiredamage42/SitePrototyper/','_blank')">
+                                <i class="fab fa-github"></i>
+                            </button>
+
+                            <button class="tablinks" id="menu-help" title="User Documentation" onclick="window.open('https://github.com/tiredamage42/SitePrototyper/blob/master/README.md#SitePrototyper','_blank')">
+                                <i class="material-icons">help</i>
+                            </button>
+
                             <!-- import/export file -->
                             <button class="tablinks" id="file-import">Import File</button>
                             <button class="tablinks" id="file-export">Export Files</button>
@@ -45,7 +60,7 @@
 
                         </div>
 
-                        <div id="menu-1">
+                        <div id="menu-1" class="menu-bar">
                             <div id="language-select" class="tab"></div>
 
                             <div>
@@ -74,13 +89,21 @@
             <div id="bottom-half">
 
                 <div id="log-window">
+
+
+
+
+                    <div class="area-resizer">
+                        <div class="area-resizer-click-area area-resizer-click-area-vertical" id="log-window-resizer-click-area"></div>
+                    </div>
+
                     <div id="log-window-title-container">
 
                         <div id="log-window-title">
                             <!-- need an extra p tag for flex -->
                             <p></p>
                             <p>Console</p>
-                            <button class="log-window-button" id="log-window-clear">Clear Logs</button>
+                            <button class="log-window-button tablinks" id="log-window-clear">Clear Logs</button>
                         </div>
                     </div>
 
