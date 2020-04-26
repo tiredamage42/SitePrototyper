@@ -84,22 +84,24 @@ document.getElementById('log-window-clear').addEventListener('click', (event) =>
     clearLogs();
 });
 
-
+function toggleConsole (active) {
+    if (active) {
+        toggleButton.className += " active";
+        logWindow.className += " active"; // add the 'active' class
+    }
+    else {
+        toggleButton.className = toggleButton.className.replace(" active", ""); // remove the 'active' class
+        logWindow.className = logWindow.className.replace(" active", ""); // remove the 'active' class
+    }
+    // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
+    triggerWindowResizeEvent();
+}
 // set up the log window toggle
 let toggleButton = document.getElementById('log-window-toggle');
 toggleButton.addEventListener('click', (event) => {
     let isActive = logWindow.className.indexOf(' active') !== -1;
-    if (!isActive) {
-        toggleButton.className += " active";
-        logWindow.className += " active"; // add the 'active' class
-    }
-    else{
-        toggleButton.className = toggleButton.className.replace(" active", ""); // remove the 'active' class
-        logWindow.className = logWindow.className.replace(" active", ""); // remove the 'active' class
-    }
+    toggleConsole (!isActive);
 
-    // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
-    triggerWindowResizeEvent();
 });
 
 
@@ -121,7 +123,7 @@ const setConsoleHeight = (height) => {
     triggerWindowResizeEvent();
 };
 
-// setConsoleHeight(.3);
+
 
 const getConsoleHeight = () => {
     const curMaxHeight = getComputedStyle(logWindowMsgs).getPropertyValue('--resizeable-height');
@@ -133,18 +135,8 @@ const startDragging = (event) => {
 
     const mouseDragHandler = (moveEvent) => {
         moveEvent.preventDefault();
-        const primaryButtonPressed = moveEvent.buttons === 1;
 
-        if (!primaryButtonPressed) {
-            setConsoleHeight(getConsoleHeight());
 
-            document.removeEventListener('pointermove', mouseDragHandler);
-            // restore result display pointer events to normal
-            resultDisplay.style.pointerEvents = "auto";
-            // restore mouse cursor to normal
-            logWindowMsgs.style.cursor = 'auto';
-            return;
-        }
 
         function clamp01 (v) {
             return Math.min(Math.max(v, 0), 1);
@@ -154,6 +146,20 @@ const startDragging = (event) => {
         let percent = 1.0 - clamp01(moveEvent.pageY / document.body.clientHeight);
 
         setConsoleHeight(percent);
+
+
+        const primaryButtonPressed = moveEvent.buttons === 1;
+
+        if (!primaryButtonPressed) {
+            // setConsoleHeight(getConsoleHeight());
+
+            document.removeEventListener('pointermove', mouseDragHandler);
+            // restore result display pointer events to normal
+            resultDisplay.style.pointerEvents = "auto";
+            // restore mouse cursor to normal
+            logWindowMsgs.style.cursor = 'auto';
+            return;
+        }
     };
 
     document.addEventListener('pointermove', mouseDragHandler);
@@ -168,3 +174,6 @@ const startDragging = (event) => {
 };
 
 logWindowTitleBar.addEventListener('mousedown', startDragging);
+
+setConsoleHeight(.15);
+toggleConsole (true);

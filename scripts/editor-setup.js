@@ -8,7 +8,7 @@
 
 // defaults
 export const defualtFontSize = 12;
-export const defualtTheme = 'monokai';
+export const defualtTheme = 'tomorrow_night_eighties';
 
 // initialize an ace editor, and start 3 sessions for html, css, js
 export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand) {

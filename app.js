@@ -44,11 +44,12 @@ code {
 const defaultJS = `
 const btn = document.getElementById('demo-button');
 
+console.log('A normal console log');
+console.warn('A warning message');
+console.error('An error message!');
+
 btn.addEventListener('click', (e) => {
-    alert("JS is functional, check the console to see console logs");
-    console.log('A normal console log');
-    console.warn('A warning message');
-    console.error('An error message!');
+    alert("JS is functional!");
 });
 `;
 
