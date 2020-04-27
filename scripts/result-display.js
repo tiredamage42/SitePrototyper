@@ -31,32 +31,44 @@
     and then settings the iframe's source to this built html string
 */
 
+import { assertHTMLIsWithinHTMLTags } from './html-parsing.js';
+
 // an iframe element
 let resultDisplay = document.getElementById("result-display");
 
 // insert a script that overrides the iframe's console logs
 // to instead send a message to the parent window, with the arguments
 // then logs are printed to our custom console
-const consoleOverrideScript = `<script>
-function postMessageToParentWindow (args, severity) {
-    Array.prototype.unshift.call(args, severity);
-    window.parent.postMessage(Array.from(args), '*');
-}
-console.log = function() { postMessageToParentWindow (arguments, 0); };
-console.warn = function() { postMessageToParentWindow (arguments, 1); };
-console.error = function() { postMessageToParentWindow (arguments, 2); };
-</script>
+const consoleOverrideScript = `
+    function postMessageToParentWindow (args, severity) {
+        Array.prototype.push.call(args, severity);
+        Array.prototype.push.call(args, 'LOG');
+        window.parent.postMessage(Array.from(args), '*');
+    }
+    console.log = function() { postMessageToParentWindow (arguments, 0); };
+    console.warn = function() { postMessageToParentWindow (arguments, 1); };
+    console.error = function() { postMessageToParentWindow (arguments, 2); };
+`;
+
+// we need to define hotkeys manually in the iframe,
+// since hotkeys assigned outside dont work within iframe context
+const allHotKeys = 'ctrl+e, command+e, ctrl+i, command+i, ctrl+shift+c, command+shift+c, ctrl+shift+s, command+shift+s, ctrl+s, command+s';
+const hotkeysScript =`
+    <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
+    <script>
+        hotkeys('${allHotKeys}', function(event, handler) {
+
+            // let args = [ handler.key, 'HOTKEY' ];
+            // console.log(args);
+            window.parent.postMessage([ handler.key, 'HOTKEY' ], '*');
+            return false;
+        });
+    </script>
 `;
 
 export function updateDisplay (htmlString, cssString, jsString) {
-    // remove white space
-    htmlString = htmlString.trim();
 
-    // create a temprorary html node with our html string
-    let htmlNode = document.createElement('html');
-
-    // assert it's surrounded by an <html> tag
-    htmlNode.innerHTML = htmlString.startsWith('<html>') ? htmlString.substring(6, htmlString.length - 7) : htmlString;
+    let htmlNode = assertHTMLIsWithinHTMLTags (htmlString);
 
     // fix links to always open in a new tab,
     // links inside iframes generate CORS errors when going to a differnt domain
@@ -65,20 +77,32 @@ export function updateDisplay (htmlString, cssString, jsString) {
     for (let i = 0; i < links.length; i++)
         links[i].setAttribute('target', '_base');
 
+    // surround the js script section in a try catch, so that any
+    // errors get propogated up to our custom console
+    const jsTryCatch = `
+        try {
+            ${jsString}
+        }
+        catch(e) {
+            console.error(e);
+        }
+    `;
     // reconstruct html as string
     let finalHTML = `
         <html>
             <head>
                 ${htmlNode.getElementsByTagName('head')[0].innerHTML}
                 <style>${cssString}</style>
-                ${consoleOverrideScript}
             </head>
             <body>
                 ${htmlNode.getElementsByTagName('body')[0].innerHTML}
-                <script>${jsString}</script>
+                <script>
+                    ${consoleOverrideScript}
+                    ${jsTryCatch}
+                </script>
+                ${hotkeysScript}
             </body>
         </html>
     `;
-
     resultDisplay.srcdoc = finalHTML;
 }

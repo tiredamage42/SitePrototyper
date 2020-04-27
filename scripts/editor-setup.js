@@ -31,11 +31,14 @@
 */
 
 // defaults
-export const defualtFontSize = 12;
-export const defualtTheme = 'tomorrow_night_eighties';
+export const defaultFontSize = 12;
+export const defaultTabSize = 4;
+export const defaultTheme = 'tomorrow_night_eighties';
 
 // initialize an ace editor, and start 3 sessions for html, css, js
-export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand, toggleConsoleCommand) {
+// export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand, toggleConsoleCommand) {
+export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView) {
+
     // update the result display with the default values
     onUpdateView (defaultHTML, defaultCSS, defaultJS);
 
@@ -54,74 +57,66 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
     }
 
     // create an object for the sessions
-    const name2session =  {
+    const name2sess =  {
         HTML: createSession ('html', defaultHTML),
         CSS: createSession ('css', defaultCSS),
         JS: createSession ('javascript', defaultJS),
     };
 
-    function updateViewWithSessions () {
-        onUpdateView (name2session.HTML.getValue(), name2session.CSS.getValue(), name2session.JS.getValue());
-    }
+    // function updateViewWithSessions () {
+    //     onUpdateView (name2sess.HTML.getValue(), name2sess.CSS.getValue(), name2sess.JS.getValue());
+    // }
 
-    // add teh update view command
-    editor.commands.addCommand({
-        name: 'Update View',
-        bindKey: { win: 'Ctrl-S',  mac: 'Command-S' },
-        exec: function(editor) {
-            updateViewWithSessions();
-        },
-        // readOnly: true // false if this command should not apply in readOnly mode
-    });
-    // add teh update view command
-    editor.commands.addCommand({
-        name: 'Update View And Clear Console',
-        bindKey: { win: 'Ctrl-Shift-S',  mac: 'Command-Shift-S' },
-        exec: function(editor) {
-            clearLogsCommand();
-            updateViewWithSessions();
-        },
-    });
+    // // add teh update view command
+    // editor.commands.addCommand({
+    //     name: 'Update View',
+    //     bindKey: { win: 'Ctrl-S',  mac: 'Command-S' },
+    //     exec: function(editor) {
+    //         updateViewWithSessions();
+    //     },
+    // });
+    // // add teh update view command
+    // editor.commands.addCommand({
+    //     name: 'Update View And Clear Console',
+    //     bindKey: { win: 'Ctrl-Shift-S',  mac: 'Command-Shift-S' },
+    //     exec: function(editor) {
+    //         clearLogsCommand();
+    //         updateViewWithSessions();
+    //     },
+    // });
 
-    // add teh update view command
-    editor.commands.addCommand({
-        name: 'Toggle Console',
-        bindKey: { win: 'Ctrl-Shift-C',  mac: 'Command-Shift-C' },
-        exec: function(editor) {
-            toggleConsoleCommand();
-        },
-    });
+    // // add teh update view command
+    // editor.commands.addCommand({
+    //     name: 'Toggle Console',
+    //     bindKey: { win: 'Ctrl-Shift-C',  mac: 'Command-Shift-C' },
+    //     exec: function(editor) {
+    //         toggleConsoleCommand();
+    //     },
+    // });
 
-    // add teh export command
-    editor.commands.addCommand({
-        name: 'Export',
-        bindKey: { win: 'Ctrl-E',  mac: 'Command-E' },
-        exec: function(editor) {
-            alert('TODO: implement export');
-        },
-    });
-    // add teh import command
-    editor.commands.addCommand({
-        name: 'Import',
-        bindKey: { win: 'Ctrl-I',  mac: 'Command-I' },
-        exec: function(editor) {
-            alert('TODO: implement import');
-        },
-    });
-
-    // add teh beautify key command
-    let beautify = require("ace/ext/beautify");
-    editor.commands.addCommands(beautify.commands);
+    // // add teh export command
+    // editor.commands.addCommand({
+    //     name: 'Export',
+    //     bindKey: { win: 'Ctrl-E',  mac: 'Command-E' },
+    //     exec: function(editor) {
+    //         alert('TODO: implement export');
+    //     },
+    // });
+    // // add teh import command
+    // editor.commands.addCommand({
+    //     name: 'Import',
+    //     bindKey: { win: 'Ctrl-I',  mac: 'Command-I' },
+    //     exec: function(editor) {
+    //         alert('TODO: implement import');
+    //     },
+    // });
 
     // set configuration options
     editor.setOptions({
         // TODO: PUT THE FOLLOWING IN PUBLIC MENU / TOGGLE
-        tabSize: 2,
         // fontFamily: css font-family value
-        // ================================================
 
         // editor options
-
         // selectionStyle: "line"|"text"
         cursorStyle: "ace", //"ace"|"slim"|"smooth"|"wide"
 
@@ -153,7 +148,6 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         // printMarginColumn: number (defaults to 80)
         // // shortcut for showPrintMargin and printMarginColumn
         // printMargin: false|number
-
 
         fadeFoldWidgets: false,
         // showFoldWidgets: boolean (defaults to true)
@@ -203,7 +197,7 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
 
     // editor.setReadOnly(true);  // false to make it editable
 
-    return { editor, name2session };
+    return { editor, name2sess };
 }
 
 // all the possible editor color themes

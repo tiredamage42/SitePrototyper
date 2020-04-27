@@ -16,9 +16,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-
-
-
 <html>
     <head>
 
@@ -38,7 +35,6 @@
 
         <div id="site-container">
 
-
             <div id="top-half">
 
                 <!-- display the written html, css, and js. -->
@@ -51,7 +47,6 @@
 
                 <!-- right hand side of the screen -->
                 <div id="code-area">
-
 
                     <div id="menus" class="menu-bar">
 
@@ -85,6 +80,10 @@
                             <div id="language-select" class="tab"></div>
 
                             <div>
+
+                                <!-- tab size select -->
+                                <select name="tab-size-select" id="tab-size-select" title="Tab Size"></select>
+
                                 <!-- font size select -->
                                 <select name="font-size-select" id="font-size-select" title="Font Size"></select>
                                 <!-- theme select -->
@@ -109,15 +108,11 @@
 
             <div id="bottom-half">
 
+                <div class="area-resizer">
+                    <div class="area-resizer-click-area area-resizer-click-area-vertical" id="log-window-resizer-click-area"></div>
+                </div>
+
                 <div id="log-window">
-
-
-
-
-                    <div class="area-resizer">
-                        <div class="area-resizer-click-area area-resizer-click-area-vertical" id="log-window-resizer-click-area"></div>
-                    </div>
-
                     <div id="log-window-title-container">
 
                         <div id="log-window-title">
@@ -134,10 +129,16 @@
             </div>
         </div>
 
+        <!-- hotkeys -->
+        <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
+        <!-- <script charset="utf-8" type="text/javascript" src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js" crossorigin="anonymous"></script> -->
+        <!-- <script charset="utf-8" type="text/javascript" src="vendors/hotkeys/hotkeys.js"></script> -->
+
+        <!-- js zip for exporting -->
+        <script charset="utf-8" type="text/javascript" src="vendors/jszip/jszip.min.js"></script>
         <!-- ace dependencies -->
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ace.js"></script>
         <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-language_tools.js"></script>
-        <script charset="utf-8" type="text/javascript" src="vendors/ace/src-min/ext-beautify.js"></script>
 
         <!-- our script -->
         <script charset="utf-8" type="module" src="app.js"></script>

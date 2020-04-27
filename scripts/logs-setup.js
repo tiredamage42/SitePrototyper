@@ -34,8 +34,10 @@
     in browser editor dont get confused with normal developer console logs
 */
 
-import { intiializeResizableElement, triggerWindowResizeEvent } from './resize-elements.js';
-import { setElementActive, getElementActive, addChildToElement } from './dom-utils.js';
+import {
+    setElementsActive, getElementActive, addChildToElement,
+    initializeResizableElement, triggerWindowResizeEvent
+} from './dom-utils.js';
 
 
 let logWindow = document.getElementById('log-window');
@@ -51,16 +53,28 @@ logWindowMsgs.addEventListener('click', (e) => {
 
 // prepare to receive a message from the iframe with the log arguments
 window.addEventListener("message", (event) => {
-
+    let type = event.data.pop();
+    if (type !== 'LOG') {
+        event.data.push(type);
+        return;
+    }
+    console.log("got log message");
     // first element is the severity
-    let severity = event.data.shift();
+    let severity = event.data.pop();
 
     // parse obj to string
     function obj2String (obj) {
-        if (Array.isArray(obj))
-            return `[ ${String(obj)} ]`;
-        else if (typeof obj === 'object')
+
+        if (Array.isArray(obj)) {
+            return `[ ${obj.toString()} ]`;
+        }
+        else if (typeof obj === 'object') {
+            // check if it has a custom 'toString' method
+            if (obj.toString !== Object.prototype.toString)
+                return obj.toString();
+
             return JSON.stringify(obj);
+        }
         return String(obj);
     }
     // add a string representation to the log messages element
@@ -69,9 +83,6 @@ window.addEventListener("message", (event) => {
 
 /*
     adds a log elemnt to the messages list:
-
-    structure is:
-
     <div>
         <span> the log text </span>
         <i> the delete icon </i>
@@ -79,14 +90,9 @@ window.addEventListener("message", (event) => {
 */
 const severitySuffixes = [ 'log', 'warn', 'err' ];
 function addLog (logTxt, severity) {
-
     let msg = addChildToElement(logWindowMsgs, 'div', 'log-message ' + severitySuffixes[severity]);
-
-    let span = addChildToElement(msg, 'span');
-    span.innerText = logTxt;
-
-    let deleteIcon = addChildToElement(msg, 'i', 'material-icons');
-    deleteIcon.innerText = deleteLogIcon;
+    addChildToElement(msg, 'span', '', logTxt);
+    addChildToElement(msg, 'i', 'material-icons', deleteLogIcon);
 }
 
 // deletes all console messages
@@ -94,22 +100,17 @@ export function clearLogs () {
     logWindowMsgs.innerHTML = '';
 }
 // set up the clear console button
-document.getElementById('log-window-clear').addEventListener('click', (event) => {
-    clearLogs();
-});
+document.getElementById('log-window-clear').addEventListener('click', (event) => clearLogs() );
 
 // set up the log window toggle
 let toggleButton = document.getElementById('log-window-toggle');
 
 export function toggleConsole (active) {
-
     // just toggle to opposite if active parameter is not supplied
     if (active === undefined)
         active = !getElementActive(logWindow);
 
-    setElementActive (toggleButton, active);
-    setElementActive (logWindow, active);
-
+    setElementsActive([toggleButton, logWindow], active);
     // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
     triggerWindowResizeEvent();
 }
@@ -121,15 +122,8 @@ toggleButton.addEventListener('click', (event) => toggleConsole () );
     clicking and dragging the title bar
 */
 
-const maxHeight = .5;
-const initialHeight = .15;
-
-
-intiializeResizableElement(
-    logWindowMsgs,
-    document.getElementById('log-window-resizer-click-area'),
-    initialHeight, maxHeight, true
-);
+let resizePixelOffset = document.getElementById('log-window-title-container').getBoundingClientRect().height;
+initializeResizableElement ('log-window-messages', 'log-window-resizer-click-area', true, resizePixelOffset);
 toggleConsole (true);
 
 

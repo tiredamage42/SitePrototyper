@@ -6,13 +6,13 @@
 - Uses [Ace](https://ace.c9.io "Visit the Ace homepage") for text highlighting
 
 # How to Use:
-- **Update View:**<br />`Ctrl-S / Cmd-S`
+- **Update View:**<br />`[Ctrl/Cmd]-S`
 <hr>
 
-- **Update View And Clear Console:**<br />`Ctrl-Shift-S / Cmd-Shift-S`
+- **Update View And Clear Console:**<br />`[Ctrl/Cmd]-Shift-S`
 <hr>
 
-- **Toggle Console:**<br />`Ctrl-Shift-C / Cmd-Shift-C`<br />
+- **Toggle Console:**<br />`[Ctrl/Cmd]-Shift-C`<br />
   ![](docs/console_toggle.png)
 <hr>
 
@@ -32,15 +32,15 @@
 <br />
 
 # To-Do:
-- ### Import File
-  `Ctrl-I / Cmd-I`
+- ### Import File To The Current Editor
+  `[Ctrl/Cmd]-I`
 
   ![](docs/import.png)
 <hr>
 
 
-- ### Export File
-  `Ctrl-E / Cmd-E`
+- ### Export Project Files
+  `[Ctrl/Cmd]-E`
 
   ![](docs/export.png)
 <hr>
@@ -50,3 +50,6 @@
 - Deployment To Github Repo / Pages
 - Import/Export from/to git
 - Fix 'local' links that shouldnt open in a new tab
+- Update View Button
+- Permanent shortcuts view
+- Body Tag classes, id, etc...

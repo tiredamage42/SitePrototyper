@@ -19,13 +19,17 @@
 */
 
 
-import { initializeEditor } from './scripts/editor-setup.js';
-import { initializeKeyboardShortcutShower, initializeThemeSelector, initializeFontSizeSelector, initializeWrapButton, initializeLanguageSelection } from './scripts/menu-setup.js';
+
+
+
+import { buildSelector, buildTabs, buildToggleButton, initializeResizableElement } from './scripts/dom-utils.js';
+import { initializeEditor, themes, defaultTheme, defaultFontSize, defaultTabSize } from './scripts/editor-setup.js';
+import { exportProject } from './scripts/export-project.js';
+import { importFile } from './scripts/import-file.js';
 import { updateDisplay } from './scripts/result-display.js';
-
 import { toggleConsole, clearLogs } from  './scripts/logs-setup.js';
+import { initializeKeyboardShortcuts } from './scripts/keyboard-shortcuts.js';
 
-import { intiializeResizableElement } from './scripts/resize-elements.js';
 
 const defaultHTML = `
 <html>
@@ -35,16 +39,18 @@ const defaultHTML = `
     </head>
     <body>
         <h1>Site Prototyper</h1>
-        <p>
-            Press <code>Ctrl-S</code> (<code>Cmd-S</code> on OS-X)
-            to update the view.
-        </p>
-        <p id="source-link">
-            <b>
-                <a href="https://github.com/tiredamage42/SitePrototyper">View The Source Code Here</a>
-            </b>
-        </p>
-        <button type="submit" id="demo-button">Click Here To Test JS</button>
+
+        <p><code>[Ctrl/Cmd]-S</code> to update the view.</p>
+        <p><code>[Ctrl/Cmd]-Shift-S</code> to update the view and clear the output console.</p>
+        <p><code>[Ctrl/Cmd]-Shift-C</code> to toggle the output console.</p>
+        <p><code>[Ctrl/Cmd]-E</code> to export and download the project files.</p>
+        <p><code>[Ctrl/Cmd]-I</code> to upload a file into the current editor</p>
+
+        <button type="submit" id="demo-button">Demo Button</button>
+
+        <br><br>
+
+        <a href="https://github.com/tiredamage42/SitePrototyper">View The Source Code Here</a>
     </body>
 </html>
 `;
@@ -53,70 +59,95 @@ const defaultCSS = `
 body {
     text-align: center;
 }
-code {
-    background-color: rgba(0,0,0,.5);
-    color: rgba(230, 230, 230, 255);
-    padding: 0 5px;
+p {
+    text-align: left;
 }
-#source-link {
-    margin: 25px;
+code {
+    background-color: rgba(0,0,0,.25);
+    padding: 0 5px;
 }
 `;
 const defaultJS = `
+console.log('Testing console.log');
+console.warn('Testing console.warn');
+console.error('Testing console.error');
+
 const btn = document.getElementById('demo-button');
-
-console.log('A normal console log');
-console.warn('A warning message');
-console.error('An error message!');
-
 btn.addEventListener('click', (e) => {
     alert("JS is functional!");
 });
 `;
 
-let { editor, name2session } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay, clearLogs, toggleConsole);
-
-initializeThemeSelector ( (theme) => editor.setTheme(`ace/theme/${theme}`) );
-
-initializeFontSizeSelector ( (fontSize) => editor.setFontSize(fontSize) );
-
-initializeWrapButton ( (wrap) => {
-    if (!wrap)
-        wrap = !name2session['HTML'].getUseWrapMode();
-
-    Object.values(name2session).forEach (s => s.setUseWrapMode(wrap) );
-    return wrap;
-} );
-
-initializeLanguageSelection (Object.keys(name2session), (language) => editor.setSession(name2session[language]) );
+let { editor, name2sess } = initializeEditor(defaultHTML, defaultCSS, defaultJS, updateDisplay, clearLogs, toggleConsole);
 
 
-// shortcuts that didnt work for me
-const skipShortcuts = [
-    'showSettingsMenu',
-    'toggleParentFoldWidget',
-    'toggleFoldWidget',
-    'goToNextError',
-    'openCommandPallete'
-];
+buildSelector ('theme-select', themes, defaultTheme, (theme) => editor.setTheme(`ace/theme/${theme}`) );
+buildSelector ('font-size-select', [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], defaultFontSize, (fontSize) => editor.setFontSize(fontSize) );
+buildSelector ('tab-size-select', [2,4], defaultTabSize, (tabSize) => editor.setOption('tabSize', tabSize) );
 
-let shortcutsWithBindings = Object.values(editor.commands.byName).filter(sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)).map(sc => { return { name: sc.name, bindKey: sc.bindKey } } );
+buildToggleButton ('wrap-button',
+    () => { return name2sess['HTML'].getUseWrapMode(); },
+    (val) => { Object.values(name2sess).forEach (s => s.setUseWrapMode(val) ); },
+    true
+);
 
-initializeKeyboardShortcutShower (shortcutsWithBindings, (shortcut, i, s1, s2) => {
+buildTabs ('language-select', Object.keys(name2sess), 0, (language) => editor.setSession(name2sess[language]));
 
-    s1.innerText = `${shortcut.name}:`;
+initializeKeyboardShortcuts (Object.values(editor.commands.byName));
 
-    let mac = shortcut.bindKey.mac;
+initializeResizableElement ('code-area', 'code-area-resizer-click-area', false);
 
-    // shorten the strign a little
-    if (mac)
-        mac = shortcut.bindKey.mac.replace(/Command/g, 'Cmd');
+function importFileToCurrentSession () {
+    importFile ( (txt) => editor.session.setValue(txt) );
+}
+document.getElementById('file-import').addEventListener('click', (evt) => importFileToCurrentSession() );
 
-    s2.innerText = `Mac: ${mac || shortcut.bindKey.win}\nWin: ${shortcut.bindKey.win || mac}`;
+function exportSessionFiles () {
+    exportProject ( name2sess['HTML'].getValue(), name2sess['CSS'].getValue(), name2sess['JS'].getValue() );
+}
+document.getElementById('file-export').addEventListener('click', (evt) => exportSessionFiles() );
+
+function updateViewWithSessions () {
+    updateDisplay (name2sess.HTML.getValue(), name2sess.CSS.getValue(), name2sess.JS.getValue());
+}
+
+function handleHotkey (key) {
+    if (key == 'command+s' || key == 'ctrl+s') {
+        updateViewWithSessions();
+    }
+    else if (key == 'command+shift+s' || key == 'ctrl+shift+s') {
+        clearLogs();
+        updateViewWithSessions();
+    }
+    else if (key == 'command+shift+c' || key == 'ctrl+shift+c') {
+        toggleConsole();
+    }
+    else if (key == 'command+i' || key == 'ctrl+i') {
+        importFileToCurrentSession();
+    }
+    else if (key == 'command+e' || key == 'ctrl+e') {
+        exportSessionFiles();
+    }
+}
+
+
+
+hotkeys.filter = function(event){
+    return true;
+}
+hotkeys('ctrl+s, command+s, ctrl+shift+s, command+shift+s, ctrl+shift+c, command+shift+c, ctrl+i, command+i, ctrl+e, command+e', function(event, handler) {
+    handleHotkey(handler.key);
+    return false;
 });
 
-intiializeResizableElement(
-    document.getElementById('code-area'),
-    document.getElementById('code-area-resizer-click-area'),
-    .5, .75
-);
+// prepare to receive a message from the iframe with the hotkey arguments
+window.addEventListener("message", (event) => {
+
+    let type = event.data.pop();
+    if (type !== 'HOTKEY') {
+        event.data.push(type);
+        return;
+    }
+    let key = event.data.pop();
+    handleHotkey(key);
+});
