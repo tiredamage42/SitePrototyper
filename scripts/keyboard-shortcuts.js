@@ -1,6 +1,6 @@
 /*
 
-    Site Prototyper (an in-browser html/css/js editor)
+    Wingman (an in-browser html/css/js editor)
     Copyright (C) 2020  Andres Gomez
 
     This program is free software: you can redistribute it and/or modify
@@ -25,29 +25,23 @@
     handle displaying all teh keyboard shortcuts
 */
 
-import { toggleElementsActive, addChildToElement } from './dom-utils.js';
+import { addChildToElement } from './dom-utils.js';
 
 export function initializeKeyboardShortcuts (allShortcuts) {
 
     // shortcuts that didnt work for me
-    const skipShortcuts = [
-        'showSettingsMenu',
-        'toggleParentFoldWidget',
-        'toggleFoldWidget',
-        'goToNextError',
-        'openCommandPallete'
+    const skip = [
+
     ];
 
     let view = document.getElementById('keyboard-shortcuts');
 
     // build the shortcuts view
-    let shortcutsWithBindings = allShortcuts.filter(
-        sc => (!(skipShortcuts.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)
-    );
+    allShortcuts = allShortcuts.filter(
+        sc => (!(skip.includes(sc.name))) && ('bindKey' in sc) && (sc.bindKey.mac != null || sc.bindKey.win != null)
+    ).forEach((shortcut, i) => {
 
-    shortcutsWithBindings.forEach((shortcut, i) => {
         let scElement = addChildToElement(view, 'div', 'keyboard-shortcut');
-
         addChildToElement (scElement, 'span', 'keyboard-shortcut-name', `${shortcut.name}:`);
 
         let win = shortcut.bindKey.win;
@@ -68,7 +62,5 @@ export function initializeKeyboardShortcuts (allShortcuts) {
         addChildToElement (scElement, 'span', 'keyboard-shortcut-bindKey', bind);
     });
 
-    // handle the logic to activate and deactivate the shortcut view
-    let toggle = document.getElementById('show-key-shortcuts');
-    toggle.addEventListener( 'click', e => toggleElementsActive ( [ view, toggle ] ) );
+    return view;
 }

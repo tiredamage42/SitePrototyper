@@ -1,6 +1,6 @@
 /*
 
-    Site Prototyper (an in-browser html/css/js editor)
+    Wingman (an in-browser html/css/js editor)
     Copyright (C) 2020  Andres Gomez
 
     This program is free software: you can redistribute it and/or modify
@@ -23,12 +23,11 @@
     utility functions for dom manipulation
 */
 
-
 export function setElementActive (element, active) {
     if (active)
-        element.className += " active";
+        element.classList.add("active");
     else
-        element.className = element.className.replace(" active", ""); // remove the 'active' class
+        element.classList.remove("active");
 }
 
 export function setElementsActive (elements, active) {
@@ -36,14 +35,14 @@ export function setElementsActive (elements, active) {
 }
 
 export function toggleElementActive(element) {
-    setElementActive (element, !getElementActive(element));
+    element.classList.toggle('active');
 }
 export function toggleElementsActive (elements) {
     elements.forEach( e => toggleElementActive(e) );
 }
 
 export function getElementActive(element) {
-    return element.className.indexOf(' active') !== -1;
+    return element.classList.contains('active');
 }
 
 export function addChildToElement (element, tag, className, innerText) {
@@ -83,7 +82,7 @@ export function buildTabs (containerID, collection, defaultSelectedIndex, onSele
 
     collection.forEach( (v, i) => {
         // for each language specified, create a tab button
-        let btn = addChildToElement(container, 'button', 'tablinks', v);
+        let btn = addChildToElement(container, 'button', 'button-menu-left', v);
         if (i == defaultSelectedIndex)
             setElementActive(btn, true);
     });
@@ -103,15 +102,23 @@ export function buildTabs (containerID, collection, defaultSelectedIndex, onSele
     onSelect(collection[defaultSelectedIndex]);
 }
 
-export function buildToggleButton (elementID, getValue, setValue, defaultValue) {
-    // get the button
-    let toggle = document.getElementById(elementID);
+export function buildToggleButton (elementID, tooltip, getValue, setValue, defaultValue) {
+    let tgl = initButton (elementID, tooltip);
     function setVal (active) {
         setValue(active);
-        setElementActive(toggle, active)
+        setElementActive(tgl, active)
     }
-    toggle.addEventListener( 'click', (evt) => setVal(!getValue()) );
+    tgl.addEventListener('click', (evt) => setVal(!getValue()));
     setVal(defaultValue);
+}
+
+// export function initButton (elementID, tooltip, onClick) {
+export function initButton (elementID, tooltip) {
+    let btn = document.getElementById(elementID);
+    btn.title = tooltip;
+
+    // btn.addEventListener( 'click', onClick );
+    return btn;
 }
 
 // trigger the event that calls when a iwndow is resized
@@ -182,3 +189,34 @@ export function initializeResizableElement (resizeElementID, dragElementID, vert
 
     drag.addEventListener('mousedown', startDragging);
 }
+
+
+export function disableOnOutsideAreaClick (area, elements) {
+    function closeIfOutisdeClick(e) {
+        if (!area.contains(e.target)) {
+            if (getElementActive(area))
+                setElementsActive(elements, false);
+            window.removeEventListener('click', closeIfOutisdeClick);
+        }
+    }
+    function onAreaToggle (){
+        if (getElementActive(area))
+            setTimeout( () => window.addEventListener('click', closeIfOutisdeClick), 1);
+        else
+            window.removeEventListener('click', closeIfOutisdeClick);
+    }
+    return onAreaToggle;
+}
+
+
+// takes in an html string
+export function assertHTMLIsWithinHTMLTags (html) {
+    // remove white space
+    html = html.trim();
+    // create a temprorary html node with our html string
+    let htmlNode = document.createElement('html');
+    // assert it's surrounded by an <html> tag
+    htmlNode.innerHTML = html.startsWith('<html>') ? html.substring(6, html.length - 7) : html;
+    return htmlNode;
+}
+

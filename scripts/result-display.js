@@ -1,5 +1,5 @@
 /*
-    Site Prototyper (an in-browser html/css/js editor)
+    Wingman (an in-browser html/css/js editor)
     Copyright (C) 2020  Andres Gomez
 
     This program is free software: you can redistribute it and/or modify
@@ -31,78 +31,86 @@
     and then settings the iframe's source to this built html string
 */
 
-import { assertHTMLIsWithinHTMLTags } from './html-parsing.js';
+import { assertHTMLIsWithinHTMLTags } from './dom-utils.js';
 
-// an iframe element
-let resultDisplay = document.getElementById("result-display");
+export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet) {
+    // an iframe element
+    let resultDisplay = document.getElementById("result-display");
 
-// insert a script that overrides the iframe's console logs
-// to instead send a message to the parent window, with the arguments
-// then logs are printed to our custom console
-const consoleOverrideScript = `
-    function postMessageToParentWindow (args, severity) {
-        Array.prototype.push.call(args, severity);
-        Array.prototype.push.call(args, 'LOG');
-        window.parent.postMessage(Array.from(args), '*');
+    function updateDisplay () {
+        let { html, css, js } = sessionStringsGet();
+
+        let htmlNode = assertHTMLIsWithinHTMLTags (html);
+
+        // fix links to always open in a new tab,
+        // links inside iframes generate CORS errors when going to a differnt domain
+        // TODO: waht if user wants link to open in editor?
+        let links = htmlNode.getElementsByTagName('a');
+        for (let i = 0; i < links.length; i++)
+            links[i].setAttribute('target', '_base');
+
+        // reconstruct html as string
+        let finalHTML = `
+            <html>
+                <head>
+                    ${htmlNode.getElementsByTagName('head')[0].innerHTML}
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${htmlNode.getElementsByTagName('body')[0].innerHTML}
+                    <script>
+
+                        // insert a script that overrides the iframe's console logs
+                        // to instead send a message to the parent window, with the arguments
+                        // then logs are printed to our custom console
+
+                        function postMessageToParentWindow (args, severity) {
+                            Array.prototype.push.call(args, severity);
+                            Array.prototype.push.call(args, 'LOG');
+                            window.parent.postMessage(Array.from(args), '*');
+                        }
+                        console.log = function() { postMessageToParentWindow (arguments, 0); };
+                        console.warn = function() { postMessageToParentWindow (arguments, 1); };
+                        console.error = function() { postMessageToParentWindow (arguments, 2); };
+
+                        // surround the js script section in a try catch, so that any
+                        // errors get propogated up to our custom console
+                        try {
+                            ${js}
+                        }
+                        catch(e) {
+                            console.error(e);
+                        }
+
+                    </script>
+
+                    <!--
+                        we need to define hotkeys manually in the iframe,
+                        since hotkeys assigned outside dont work within iframe context
+                    -->
+                    <script src="${hotkeysSource}"></script>
+                    <script>
+                        hotkeys.filter = function(event){
+                            return true;
+                        }
+                        hotkeys('${allHotKeys}', function(event, handler) {
+
+                            // send a message to the parent that a hotkey was pressed
+                            window.parent.postMessage([ handler.key, 'HOTKEY' ], '*');
+
+                            // return false to prevent event default
+                            return false;
+                        });
+                    </script>
+                </body>
+            </html>
+        `;
+        resultDisplay.srcdoc = finalHTML;
     }
-    console.log = function() { postMessageToParentWindow (arguments, 0); };
-    console.warn = function() { postMessageToParentWindow (arguments, 1); };
-    console.error = function() { postMessageToParentWindow (arguments, 2); };
-`;
 
-// we need to define hotkeys manually in the iframe,
-// since hotkeys assigned outside dont work within iframe context
-const allHotKeys = 'ctrl+e, command+e, ctrl+i, command+i, ctrl+shift+c, command+shift+c, ctrl+shift+s, command+shift+s, ctrl+s, command+s';
-const hotkeysScript =`
-    <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
-    <script>
-        hotkeys('${allHotKeys}', function(event, handler) {
-
-            // let args = [ handler.key, 'HOTKEY' ];
-            // console.log(args);
-            window.parent.postMessage([ handler.key, 'HOTKEY' ], '*');
-            return false;
-        });
-    </script>
-`;
-
-export function updateDisplay (htmlString, cssString, jsString) {
-
-    let htmlNode = assertHTMLIsWithinHTMLTags (htmlString);
-
-    // fix links to always open in a new tab,
-    // links inside iframes generate CORS errors when going to a differnt domain
-    // TODO: waht if user wants link to open in editor?
-    let links = htmlNode.getElementsByTagName('a');
-    for (let i = 0; i < links.length; i++)
-        links[i].setAttribute('target', '_base');
-
-    // surround the js script section in a try catch, so that any
-    // errors get propogated up to our custom console
-    const jsTryCatch = `
-        try {
-            ${jsString}
-        }
-        catch(e) {
-            console.error(e);
-        }
-    `;
-    // reconstruct html as string
-    let finalHTML = `
-        <html>
-            <head>
-                ${htmlNode.getElementsByTagName('head')[0].innerHTML}
-                <style>${cssString}</style>
-            </head>
-            <body>
-                ${htmlNode.getElementsByTagName('body')[0].innerHTML}
-                <script>
-                    ${consoleOverrideScript}
-                    ${jsTryCatch}
-                </script>
-                ${hotkeysScript}
-            </body>
-        </html>
-    `;
-    resultDisplay.srcdoc = finalHTML;
+    return { updateDisplay };
 }
+
+
+
+

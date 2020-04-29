@@ -1,5 +1,5 @@
 <!--
-    Site Prototyper (an in-browser html/css/js editor)
+    Wingman (an in-browser html/css/js editor)
     Copyright (C) 2020  Andres Gomez
 
     This program is free software: you can redistribute it and/or modify
@@ -18,122 +18,100 @@
 
 <html>
     <head>
-
-        <title>Site Prototyper</title>
+        <title>Wingman</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-
         <!-- for icons -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <script src="https://kit.fontawesome.com/00649e41cc.js" crossorigin="anonymous"></script>
 
         <!-- our styles -->
         <link rel="stylesheet" type="text/css" href="style.css" />
-
     </head>
 
     <body>
-
         <div id="site-container">
+            <div class="menu-bar">
+                <div id="top-menu-left">
+                    <!-- TODO: replace with an actual logo -->
+                    <button class="button-menu-left" id="logo", title="Wingman">WINGMAN</button>
+                    <!-- refresh view -->
+                    <button class="button-menu-center" id="update-view-button"><i class="material-icons">refresh</i></button>
+                    <!-- TODO: save project -->
+                    <button class="button-menu-center" id="save-project-button"><i class="material-icons">save</i></button>
+                    <!-- import file -->
+                    <button class="button-menu-left" id="file-import"><i class="fas fa-file-upload"></i></button>
+                    <!-- export project -->
+                    <button class="button-menu-left" id="file-export"><i class="fas fa-download"></i></button>
+                    <!-- toggle console window -->
+                    <button class="button-menu-left" id="log-window-toggle"><i class="fas fa-comment-dots"></i></button>
+                </div>
+                <div id="top-menu-right">
+                    <!-- settings -->
+                    <button class="button-menu-right" id="settings-button" title="Settings"><i class="material-icons">settings</i></button>
+                    <!-- show keyboard shortcuts -->
+                    <button class="button-menu-right" id="show-key-shortcuts" title="Show Keyboard Shortcuts"><i class="material-icons">keyboard</i></button>
+                    <!-- user docs -->
+                    <button class="button-menu-right" id="menu-help" title="User Documentation" onclick="window.open('https://github.com/tiredamage42/SitePrototyper/blob/master/README.md#how-to-use','_blank')"><i class="material-icons">help</i></button>
+                    <!-- github link -->
+                    <button class="button-menu-right" id="github-link" title="Check Us Out On Github!" onclick="window.open('https://github.com/tiredamage42/SitePrototyper/','_blank')"><i class="fab fa-github"></i></button>
+                </div>
+            </div>
 
             <div id="top-half">
-
                 <!-- display the written html, css, and js. -->
                 <!-- left thand side of the screen -->
                 <iframe id="result-display"> </iframe>
 
+                <!-- resize the editor area -->
                 <div class="area-resizer">
-                    <div class="area-resizer-click-area area-resizer-click-area-horizontal" id="code-area-resizer-click-area"></div>
+                    <div class="area-resizer-click-area-horizontal" id="code-area-resizer-click-area"></div>
                 </div>
 
                 <!-- right hand side of the screen -->
                 <div id="code-area">
-
-                    <div id="menus" class="menu-bar">
-
-                        <div id="menu-0">
-
-                            <button class="tablinks" id="github-link" title="Check Us Out On Github!" onclick="window.open('https://github.com/tiredamage42/SitePrototyper/','_blank')">
-                                <i class="fab fa-github"></i>
-                            </button>
-
-                            <button class="tablinks" id="menu-help" title="User Documentation" onclick="window.open('https://github.com/tiredamage42/SitePrototyper/blob/master/README.md#how-to-use','_blank')">
-                                <i class="material-icons">help</i>
-                            </button>
-
-                            <!-- import/export file -->
-                            <button class="tablinks" id="file-import">Import File</button>
-                            <button class="tablinks" id="file-export">Export Files</button>
-
-                            <!-- show keyboard shortcuts -->
-                            <button class="tablinks" id="show-key-shortcuts" title="Show Keyboard Shortcuts"><i class="material-icons">keyboard</i></button>
-
-                            <!-- toggle console window -->
-                            <button class="tablinks" id="log-window-toggle" title="Show Console">
-                                <i id="log-window-toggle-info" class="material-icons">info</i>
-                                <i id="log-window-toggle-warning" class="material-icons">warning</i>
-                                <i id="log-window-toggle-error" class="material-icons">error</i>
-                            </button>
-
-                        </div>
-
-                        <div id="menu-1" class="menu-bar">
-                            <div id="language-select" class="tab"></div>
-
-                            <div>
-
-                                <!-- tab size select -->
-                                <select name="tab-size-select" id="tab-size-select" title="Tab Size"></select>
-
-                                <!-- font size select -->
-                                <select name="font-size-select" id="font-size-select" title="Font Size"></select>
-                                <!-- theme select -->
-                                <select name="theme-select" id="theme-select" title="Editor Color Theme"></select>
-                                <!-- word wrap toggle -->
-                                <button class="tablinks" id="wrap-button">Wrap</button>
-                            </div>
-
-                        </div>
+                    <!-- settings overlay -->
+                    <div id="settings-overlay">
+                        <div class="selector"><span>Tab Size</span><select id="tab-size-select" title="Tab Size"></select></div>
+                        <div class="selector"><span>Font Size</span><select id="font-size-select" title="Font Size"></select></div>
+                        <div class="selector"><span>Theme</span><select id="theme-select" title="Editor Color Theme"></select></div>
+                        <button class="button-" id="wrap-button">Wrap</button>
                     </div>
 
+                    <!-- where the shortcut are rendered (on top of the editor) -->
+                    <div id="keyboard-shortcuts"></div>
+
+                    <div id="menu-2" class="menu-bar">
+                        <div id="language-select" class="tab"></div>
+                    </div>
+
+                    <!-- the code editor -->
                     <div id="editor-container">
-                        <!-- the code editor -->
                         <div id="editor"></div>
-
-                        <!-- where the shortcut are rendered (on top of the editor) -->
-                        <div id="keyboard-shortcuts"></div>
                     </div>
-
                 </div>
             </div>
 
             <div id="bottom-half">
-
+                <!-- resize teh console window -->
                 <div class="area-resizer">
-                    <div class="area-resizer-click-area area-resizer-click-area-vertical" id="log-window-resizer-click-area"></div>
+                    <div class="area-resizer-click-area-vertical" id="log-window-resizer-click-area"></div>
                 </div>
 
                 <div id="log-window">
-                    <div id="log-window-title-container">
-
-                        <div id="log-window-title">
-                            <!-- need an extra p tag for flex -->
-                            <p></p>
-                            <p>Console</p>
-                            <button class="log-window-button tablinks" id="log-window-clear">Clear Logs</button>
+                    <div id="log-window-title">
+                        <p id="log-window-title-t">Console</p>
+                        <div id="log-window-title-buttons">
+                            <button class="button-menu-right" id="log-window-clear-on-update">Clear On Update</button>
+                            <button class="button-menu-right" id="log-window-clear">Clear Logs</button>
                         </div>
                     </div>
-
                     <div id="log-window-messages"></div>
-
                 </div>
             </div>
         </div>
 
         <!-- hotkeys -->
         <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
-        <!-- <script charset="utf-8" type="text/javascript" src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js" crossorigin="anonymous"></script> -->
-        <!-- <script charset="utf-8" type="text/javascript" src="vendors/hotkeys/hotkeys.js"></script> -->
-
         <!-- js zip for exporting -->
         <script charset="utf-8" type="text/javascript" src="vendors/jszip/jszip.min.js"></script>
         <!-- ace dependencies -->
@@ -142,7 +120,5 @@
 
         <!-- our script -->
         <script charset="utf-8" type="module" src="app.js"></script>
-
     </body>
-
 </html>

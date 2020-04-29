@@ -1,6 +1,6 @@
 /*
 
-    Site Prototyper (an in-browser html/css/js editor)
+    Wingman (an in-browser html/css/js editor)
     Copyright (C) 2020  Andres Gomez
 
     This program is free software: you can redistribute it and/or modify
@@ -36,11 +36,7 @@ export const defaultTabSize = 4;
 export const defaultTheme = 'tomorrow_night_eighties';
 
 // initialize an ace editor, and start 3 sessions for html, css, js
-// export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView, clearLogsCommand, toggleConsoleCommand) {
-export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateView) {
-
-    // update the result display with the default values
-    onUpdateView (defaultHTML, defaultCSS, defaultJS);
+export function initializeEditor (defaultHTML, defaultCSS, defaultJS) {
 
     // create the editor
     let editor = ace.edit("editor");
@@ -63,62 +59,12 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         JS: createSession ('javascript', defaultJS),
     };
 
-    // function updateViewWithSessions () {
-    //     onUpdateView (name2sess.HTML.getValue(), name2sess.CSS.getValue(), name2sess.JS.getValue());
-    // }
-
-    // // add teh update view command
-    // editor.commands.addCommand({
-    //     name: 'Update View',
-    //     bindKey: { win: 'Ctrl-S',  mac: 'Command-S' },
-    //     exec: function(editor) {
-    //         updateViewWithSessions();
-    //     },
-    // });
-    // // add teh update view command
-    // editor.commands.addCommand({
-    //     name: 'Update View And Clear Console',
-    //     bindKey: { win: 'Ctrl-Shift-S',  mac: 'Command-Shift-S' },
-    //     exec: function(editor) {
-    //         clearLogsCommand();
-    //         updateViewWithSessions();
-    //     },
-    // });
-
-    // // add teh update view command
-    // editor.commands.addCommand({
-    //     name: 'Toggle Console',
-    //     bindKey: { win: 'Ctrl-Shift-C',  mac: 'Command-Shift-C' },
-    //     exec: function(editor) {
-    //         toggleConsoleCommand();
-    //     },
-    // });
-
-    // // add teh export command
-    // editor.commands.addCommand({
-    //     name: 'Export',
-    //     bindKey: { win: 'Ctrl-E',  mac: 'Command-E' },
-    //     exec: function(editor) {
-    //         alert('TODO: implement export');
-    //     },
-    // });
-    // // add teh import command
-    // editor.commands.addCommand({
-    //     name: 'Import',
-    //     bindKey: { win: 'Ctrl-I',  mac: 'Command-I' },
-    //     exec: function(editor) {
-    //         alert('TODO: implement import');
-    //     },
-    // });
-
     // set configuration options
     editor.setOptions({
         // TODO: PUT THE FOLLOWING IN PUBLIC MENU / TOGGLE
         // fontFamily: css font-family value
 
         // editor options
-        // selectionStyle: "line"|"text"
-        cursorStyle: "ace", //"ace"|"slim"|"smooth"|"wide"
 
         highlightActiveLine: true,
         highlightSelectedWord: true,
@@ -126,10 +72,7 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         // // this is needed if editor is inside scrollable page
         // autoScrollEditorIntoView: boolean (defaults to false)
 
-        // wrapBehavioursEnabled: true,
-        // readOnly: true|false
         // mergeUndoDeltas: false|true|"always"
-        // behavioursEnabled: boolean
         // // copy/cut the full line if selection is empty, defaults to false
         // copyWithEmptySelection: boolean
         // useSoftTabs: boolean (defaults to false)
@@ -149,9 +92,6 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         // // shortcut for showPrintMargin and printMarginColumn
         // printMargin: false|number
 
-        fadeFoldWidgets: false,
-        // showFoldWidgets: boolean (defaults to true)
-        showLineNumbers: true,
         // showGutter: boolean (defaults to true)
         // displayIndentGuides: boolean (defaults to true)
         // // resize editor based on the contents of the editor until the number of lines reaches maxLines
@@ -160,7 +100,6 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         // // number of page sizes to scroll after document end (typical values are 0, 0.5, and 1)
         // scrollPastEnd: number|boolean
         // fixedWidthGutter: boolean (defaults to false)
-        // theme: path to a theme e.g "ace/theme/textmate"
         // mouseHandler options
 
         // scrollSpeed: number
@@ -170,13 +109,10 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         tooltipFollowsMouse: true,
 
         // session options
-        // firstLineNumber: number defaults to 1
         // overwrite: boolean
         // newLineMode: "auto" | "unix" | "windows"
         // useWorker: boolean
         useSoftTabs: false,
-        // foldStyle: "markbegin"|"markbeginend"|"manual"
-        // mode: path to a mode e.g "ace/mode/text"
 
         // editor options defined by extensions
         // to use this options the corresponding extension file needs to be loaded in addition to the ace.js
@@ -185,11 +121,6 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS, onUpdateVi
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
         enableSnippets: true,
-
-        // // the following option requires ext-emmet.js and the emmet library
-        // enableEmmet: true,
-        // // the following option requires ext-elastic_tabstops_lite.js
-        // useElasticTabstops: boolean
     });
 
     // add the callback to call when changed (if specified)

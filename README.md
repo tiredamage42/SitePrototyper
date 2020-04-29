@@ -1,4 +1,4 @@
-# SitePrototyper
+# Wingman
 
 ### An In-Browser `html` / `css` / `javascript` Text Editor
 
@@ -6,50 +6,41 @@
 - Uses [Ace](https://ace.c9.io "Visit the Ace homepage") for text highlighting
 
 # How to Use:
-- **Update View:**<br />`[Ctrl/Cmd]-S`
+- **Update View:**<br />`[Ctrl/Cmd]-S`<br />![](docs/update_view.png)
 <hr>
 
-- **Update View And Clear Console:**<br />`[Ctrl/Cmd]-Shift-S`
+- **Toggle Console:**<br />`[Ctrl/Cmd]-Shift-C`<br />![](docs/console_toggle.png)
 <hr>
 
-- **Toggle Console:**<br />`[Ctrl/Cmd]-Shift-C`<br />
-  ![](docs/console_toggle.png)
-<hr>
-
-- **Font Size, Editor Color Theme, Text Wrap**<br />![](docs/font_opts.png)
+- **Settings:** [ Font Size, Editor Color Theme, Text Wrap ]<br />![](docs/settings.png)
 <hr>
 
 - **Language Selection**<br />![](docs/language_select.png)
 <hr>
 
-- **View All Keyboard Shortcuts**<br />![](docs/shortcuts_view.png)
-
-<hr>
+- **View All Editor Shortcuts**<br />![](docs/shortcuts_view.png)
 <hr>
 
+- **Import File To The Current Editor**<br />`[Ctrl/Cmd]-I`<br />![](docs/import.png)
+<hr>
+
+- **Export Project Files**<br />`[Ctrl/Cmd]-E`<br />![](docs/export.png)
+<hr>
+
 <br />
 <br />
 <br />
+<hr>
 
 # To-Do:
-- ### Import File To The Current Editor
-  `[Ctrl/Cmd]-I`
-
-  ![](docs/import.png)
-<hr>
-
-
-- ### Export Project Files
-  `[Ctrl/Cmd]-E`
-
-  ![](docs/export.png)
-<hr>
 
 - Option to switch font
 - Finalize CSS layout and color scheme to make it look nice.
 - Deployment To Github Repo / Pages
 - Import/Export from/to git
 - Fix 'local' links that shouldnt open in a new tab
-- Update View Button
 - Permanent shortcuts view
 - Body Tag classes, id, etc...
+- Persistent projects that can be linked to
+- offsite embedding
+- rename project

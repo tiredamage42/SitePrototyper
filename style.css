@@ -1,6 +1,6 @@
 /*
 
-    Site Prototyper (an in-browser html/css/js editor)
+    Wingman (an in-browser html/css/js editor)
     Copyright (C) 2020  Andres Gomez
 
     This program is free software: you can redistribute it and/or modify
@@ -42,12 +42,14 @@ body {
 }
 
 #top-half {
+    flex: 1;
     display: flex;
-    flex:1;
+    /* position: relative; */
 }
-/* #bottom-half {
+#bottom-half {
+    /* position: relative; */
+}
 
-} */
 
 /* where the product is actually rendered */
 #result-display {
@@ -58,7 +60,8 @@ body {
 .area-resizer {
     position: relative;
 }
-.area-resizer-click-area {
+
+[class*="area-resizer-click-area-"] {
     position: absolute;
     z-index: 10;
     /* background-color: rgba(0,0,255,.5); */
@@ -66,7 +69,6 @@ body {
 .area-resizer-click-area-horizontal {
     width: var(--resize-click-area-size);
     left: var(--resize-click-area-offset);;
-
     top: 0;
     bottom: 0;
     cursor: ew-resize;
@@ -85,95 +87,136 @@ body {
     max-width: 75vw;
     width: 50vw;
 
-
     display: flex;
     flex-flow: column;
 
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--font-color);
-    border-left: 1;
-    border-top: 0;
-    border-right: 0;
-    border-bottom: 0;
+    border-left: 1px solid var(--font-color);
+    position: relative;
 }
 
 
-.tablinks {
-
+[class*="button-"] {
+    /* base button properties */
     border: 1px solid var(--font-color);
-    border-top: 0;
-    border-bottom: 0;
-
     color: var(--font-color);
-
     background-color: var(--light-gray);
     padding: 5px 10px;
     margin: 0;
+    cursor: pointer;
 }
 
-.tablinks:hover{
+[class*="button-"]:hover {
     background-color: var(--hover-color);
 }
-.tablinks.active{
+[class*="button-"]:active {
+    background-color: var(--select-blue);
+    transform: translate(0, 1px);
+}
+[class*="button-"].active {
     background-color: var(--select-blue);
 }
+
+[class*="button-menu-"] {
+    border-top: 0;
+    border-bottom: 0;
+}
+.button-menu-left {
+    border-left: 0;
+}
+.button-menu-right {
+    border-right: 0;
+}
+
+
+#top-menu-left {
+    margin-right: auto;
+    display: flex;
+}
+
+#top-menu-right {
+    display: flex;
+}
+
+#update-view-button {
+    color: rgb(0,200,0);
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+
+.selector span {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.selector {
+    display: flex;
+    justify-content: space-between;
+    font-family: "system-ui";
+    font-size: 12px;
+    padding-bottom: 3px;
+}
+
+
 
 .menu-bar {
     background-color: var(--dark-gray);
     border: 1px solid var(--font-color);
     color: var(--font-color);
     border-left: 0;
+    display: flex;
 }
 
-#menu-0{
-    display: flex;
-    flex-direction: row-reverse;
+#menu-2{
     border-top: 0;
-    border-bottom: 0;
-}
-
-/* the displayed menu at the top of the coding area */
-#menu-1{
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 0;
     border-left:0;
-    border-right:0;
 }
 
-#menu-0 > .tablinks {
-    border-right: 0;
-}
-#menu-1 > #language-select > .tablinks {
-    border-left: 0;
-}
-
-#github-link i {
-    font-size: 18;
-}
-#menu-help > i {
+.fas, .fab {
     font-size: 20;
 }
 
 #wrap-button {
-    border-right: 0;
+    float: right;
 }
-
-#show-key-shortcuts i {
-    font-size: 20px;
-}
-
 
 #editor-container {
     display: flex;
-    position: relative;
     flex-grow : 1;
 }
 
 /* the editor text input field */
 #editor {
     flex: 1;
+}
+
+
+#settings-overlay {
+    z-index: 1000;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    background-color: var(--light-gray);
+    color: var(--font-color);
+    border: 1px solid var(--font-color);
+    border-top: 0;
+
+    visibility: hidden;
+    opacity: 0;
+    width: 0;
+    transition: .4s;
+}
+#settings-overlay.active {
+    visibility: visible;
+    opacity: 1;
+    width: 250px;
+    transition: .4s;
 }
 
 
@@ -184,31 +227,30 @@ body {
     padding-top: 0;
 
     position: absolute;
-    left: 20;
-    right: 20;
+    right: 0;
+    left: 100vw;
+
     top: 0;
     bottom: 0;
-
     background-color: var(--light-gray);
     color: var(--font-color);
-
     visibility: hidden;
     opacity: 0;
-    transition: .5s;
+    transition: .4s;
 }
 #keyboard-shortcuts.active {
     visibility: visible;
     opacity: 1;
-    transition: .5s;
+    transition: .4s;
+    left: 0;
 }
 .keyboard-shortcut {
     display: flex;
     justify-content: space-between;
     padding: 5px;
     border: 1px solid var(--font-color);
-    /* border-bottom: 0; */
     border-top: 0;
-    font-size: 15;
+    font-size: 14px;
 }
 
 .keyboard-shortcut-name {
@@ -221,6 +263,7 @@ body {
 #log-window {
     background-color: var(--dark-gray);
     max-height: 0vh;
+    overflow: hidden;
 }
 #log-window.active {
     max-height: 100vh;
@@ -235,7 +278,6 @@ body {
 
 #log-window-title {
     display: flex;
-    justify-content: space-between;
 
     color: var(--font-color);
     border: 1px solid var(--font-color);
@@ -243,40 +285,40 @@ body {
 
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-}
-#log-window-title p {
-    margin: 0;
-    padding: 2px;
-}
-/* the clear logs button */
-.log-window-button {
-    border-right: 0;
-    border-top-right-radius: 7px;
-    /* z-index: 999999; */
+    position: relative;
 }
 
+#log-window-title p {
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#log-window-title-buttons {
+    margin-left: auto;
+    display: flex;
+}
+
+#log-window-clear{
+    border-top-right-radius: 7px;
+}
 
 .log-message {
     font-size: 14;
-
     /* 0 alpha, transparent */
     background-color: rgba(0,0,0,0);
 
-    border: 1px solid;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
+    border-bottom: 1px solid var(--font-color);
 
-    padding: 5px;
+    padding: 3px;
     padding-left: 10px;
     padding-right: 30px;
-
     margin: 0px;
-    margin-left: 0;
-    margin-right: 0;
-
     display: flex;
     justify-content: space-between;
+    color: var(--font-color);
 }
 
 /* delete log message icon */
@@ -285,17 +327,11 @@ body {
     font-size: 18;
     cursor: pointer;
 }
-
 .log-message.err {
     color: red;
-    border-color: var(--font-color);
 }
 .log-message.warn {
     color: darkorange;
-    border-color: var(--font-color);
-}
-.log-message.log {
-    color: var(--font-color);
 }
 
 /* always show scrollbars for log window */
@@ -305,22 +341,4 @@ body {
 #log-window-messages::-webkit-scrollbar-thumb {
     border-radius: 4px;
     background-color: var(--font-color);
-}
-
-
-
-/* #log-window-toggle {
-
-} */
-#log-window-toggle .material-icons {
-    font-size: 15;
-}
-/* #log-window-toggle-info {
-
-} */
-#log-window-toggle-warning {
-    color:darkorange;
-}
-#log-window-toggle-error {
-    color:red;
 }
