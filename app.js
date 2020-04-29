@@ -44,7 +44,7 @@ import { initializeConsole } from  './scripts/console-window-setup.js';
 import { HotKey, initializeHotKeys } from './scripts/hotkeys.js';
 
 const appName = 'Wingman';
-const appURL = 'https://tiredamage42.github.io/SitePrototyper/';
+const appURL = 'https://tiredamage42.github.io/Wingman/';
 
 const defaultHTML = `
 <html>
