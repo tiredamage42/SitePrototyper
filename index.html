@@ -16,6 +16,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+
+
+
+<!--
+    TODO:
+
+    sign in if not signed in
+        sign in overlay / create account overlay
+
+    profile icon if singed in
+        overlay menu:
+            account settings
+            projects
+-->
+
+
 <html>
     <head>
         <title>Wingman</title>
@@ -37,10 +53,15 @@
                     <button class="button-menu-left" id="logo", title="Wingman">WINGMAN</button>
                     <!-- refresh view -->
                     <button class="button-menu-center" id="update-view-button"><i class="material-icons">refresh</i></button>
-                    <!-- TODO: save project -->
+
+                    <!-- TODO: save project ONLY IF SIGNED IN-->
+                    <!--
                     <button class="button-menu-center" id="save-project-button"><i class="material-icons">save</i></button>
-                    <!-- import file -->
+                    <-- import file ->
                     <button class="button-menu-left" id="file-import"><i class="fas fa-file-upload"></i></button>
+                    -->
+                    <button class="button-menu-center" id="file-import"><i class="fas fa-file-upload"></i></button>
+
                     <!-- export project -->
                     <button class="button-menu-left" id="file-export"><i class="fas fa-download"></i></button>
                     <!-- toggle console window -->
@@ -49,8 +70,14 @@
                 <div id="top-menu-right">
                     <!-- settings -->
                     <button class="button-menu-right" id="settings-button" title="Settings"><i class="material-icons">settings</i></button>
+
                     <!-- show keyboard shortcuts -->
-                    <button class="button-menu-right" id="show-key-shortcuts" title="Show Keyboard Shortcuts"><i class="material-icons">keyboard</i></button>
+                    <!--
+                        TODO: Test all keyboard shortcuts
+                        <button class="button-menu-right" id="show-key-shortcuts" title="Show Keyboard Shortcuts"><i class="material-icons">keyboard</i></button>
+                    -->
+
+
                     <!-- user docs -->
                     <button class="button-menu-right" id="menu-help" title="User Documentation" onclick="window.open('https://github.com/tiredamage42/Wingman/blob/master/README.md#how-to-use','_blank')"><i class="material-icons">help</i></button>
                     <!-- github link -->

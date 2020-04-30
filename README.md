@@ -3,30 +3,21 @@
 ### An In-Browser `html` / `css` / `javascript` Text Editor
 
 ## [Try It Here!](https://tiredamage42.github.io/Wingman/)
-- Uses [Ace](https://ace.c9.io "Visit the Ace homepage") for text highlighting
 
 # How to Use:
-- **Update View:**<br />`[Ctrl/Cmd]-S`<br />![](docs/update_view.png)
-<hr>
 
-- **Toggle Console:**<br />`[Ctrl/Cmd]-Shift-C`<br />![](docs/console_toggle.png)
+Action | Button | Keyboard Shortcut
+--- | --- | ---
+Update View: | ![](docs/update_view.png) | `[Ctrl/Cmd]-S`
+Toggle Console: | ![](docs/console_toggle.png) | `[Ctrl/Cmd]-Shift-C`
+**Open Settings Menu**:<br>Font Size, Editor Color Theme, Text Wrap | ![](docs/settings.png) |
+Language Selection | ![](docs/language_select.png) |
+Import File To The Current Editor | ![](docs/import.png) | `[Ctrl/Cmd]-I`
+Export Project Files | ![](docs/export.png) | `[Ctrl/Cmd]-E`
+<!--
+View All Editor Shortcuts | ![](docs/shortcuts_view.png)
+ -->
 <hr>
-
-- **Settings:** [ Font Size, Editor Color Theme, Text Wrap ]<br />![](docs/settings.png)
-<hr>
-
-- **Language Selection**<br />![](docs/language_select.png)
-<hr>
-
-- **View All Editor Shortcuts**<br />![](docs/shortcuts_view.png)
-<hr>
-
-- **Import File To The Current Editor**<br />`[Ctrl/Cmd]-I`<br />![](docs/import.png)
-<hr>
-
-- **Export Project Files**<br />`[Ctrl/Cmd]-E`<br />![](docs/export.png)
-<hr>
-
 <br />
 <br />
 <br />
@@ -45,3 +36,4 @@
 - offsite embedding
 - check for empty file export
 - user accounts
+- test all editor keyboard shortcuts

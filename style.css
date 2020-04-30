@@ -20,14 +20,19 @@
 
 
 :root {
-    --dark-gray:rgb(40, 40, 40);
-    --light-gray: rgb(60, 60, 60);
-    --hover-color: rgb(100,100,100);
+    --dark-gray:rgb(45, 42, 40);
+    --light-gray: rgb(65, 62, 60);
+    --border-color: rgb(85, 82, 80);
+    --hover-color: rgb(105,102,100);
     --font-color:#ccc;
     --select-blue: rgb(82, 112, 165);
 
     --resize-click-area-size: 10px;
     --resize-click-area-offset: -5px;
+
+    /* font-family: "system-ui"; */
+    /* font-family: "Lucida Console", Monaco, monospace; */
+    font-family: "Arvo", Monaco, monospace;
 }
 
 body {
@@ -90,14 +95,19 @@ body {
     display: flex;
     flex-flow: column;
 
-    border-left: 1px solid var(--font-color);
+    /* border-left: 1px solid var(--font-color); */
+    border-left: 1px solid var(--border-color);
     position: relative;
 }
 
 
 [class*="button-"] {
     /* base button properties */
-    border: 1px solid var(--font-color);
+
+    /* border: 1px solid var(--font-color); */
+    border: 1px solid var(--border-color);
+
+
     color: var(--font-color);
     background-color: var(--light-gray);
     padding: 5px 10px;
@@ -151,7 +161,7 @@ body {
 .selector {
     display: flex;
     justify-content: space-between;
-    font-family: "system-ui";
+    /* font-family: "system-ui"; */
     font-size: 12px;
     padding-bottom: 3px;
 }
@@ -160,7 +170,10 @@ body {
 
 .menu-bar {
     background-color: var(--dark-gray);
-    border: 1px solid var(--font-color);
+
+    /* border: 1px solid var(--font-color); */
+    border: 1px solid var(--border-color);
+
     color: var(--font-color);
     border-left: 0;
     display: flex;
@@ -204,7 +217,10 @@ body {
 
     background-color: var(--light-gray);
     color: var(--font-color);
-    border: 1px solid var(--font-color);
+
+    /* border: 1px solid var(--font-color); */
+    border: 1px solid var(--border-color);
+
     border-top: 0;
 
     visibility: hidden;
@@ -233,6 +249,7 @@ body {
     top: 0;
     bottom: 0;
     background-color: var(--light-gray);
+
     color: var(--font-color);
     visibility: hidden;
     opacity: 0;
@@ -248,7 +265,9 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 5px;
-    border: 1px solid var(--font-color);
+    /* border: 1px solid var(--font-color); */
+    border: 1px solid var(--border-color);
+
     border-top: 0;
     font-size: 14px;
 }
@@ -271,7 +290,7 @@ body {
 
 #log-window-messages {
     height: 15vh;
-    max-height: 75vw;
+    max-height: 50vh;
     overflow: auto;
 }
 
@@ -280,7 +299,10 @@ body {
     display: flex;
 
     color: var(--font-color);
-    border: 1px solid var(--font-color);
+
+    /* border: 1px solid var(--font-color); */
+    border: 1px solid var(--border-color);
+
     background-color: var(--light-gray);
 
     border-top-left-radius: 7px;
@@ -308,7 +330,9 @@ body {
     /* 0 alpha, transparent */
     background-color: rgba(0,0,0,0);
 
-    border-bottom: 1px solid var(--light-gray);
+    /* border-bottom: 1px solid var(--light-gray); */
+    border-bottom: 1px solid var(--border-color);
+
 
     padding: 2px;
     padding-left: 10px;
@@ -320,7 +344,11 @@ body {
     justify-content: space-between;
     color: var(--font-color);
 
-    font-family: "system-ui";
+    /* font-family: "system-ui"; */
+}
+.log-message > span{
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 /* delete log message icon */

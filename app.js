@@ -31,7 +31,7 @@ import {
 import { initializeEditor, themes, defaultTheme, defaultFontSize, defaultTabSize } from './scripts/editor-setup.js';
 import { initResultDisplay } from './scripts/result-display.js';
 
-import { initializeKeyboardShortcuts } from './scripts/keyboard-shortcuts.js';
+// import { initializeKeyboardShortcuts } from './scripts/keyboard-shortcuts.js';
 
 import { importFile } from './scripts/io-utils.js';
 
@@ -95,13 +95,13 @@ buildToggleButton ('wrap-button', 'Toggle text wrap in the editor.', () => name2
 
 buildTabs ('language-select', Object.keys(name2sess), 0, (language) => editor.setSession(name2sess[language]));
 
-let keyboardShortcutsView = initializeKeyboardShortcuts (Object.values(editor.commands.byName));
-let keyboardShortcutToggleButton = initButton('show-key-shortcuts', 'Show Editor Keyboard Shortcuts');
-let onKeyboardShortcutsToggle = disableOnOutsideAreaClick (keyboardShortcutsView, [ keyboardShortcutsView, keyboardShortcutToggleButton ]);
-keyboardShortcutToggleButton.addEventListener('click', (e) => {
-    toggleElementsActive ( [ keyboardShortcutsView, keyboardShortcutToggleButton ]);
-    onKeyboardShortcutsToggle();
-});
+// let keyboardShortcutsView = initializeKeyboardShortcuts (Object.values(editor.commands.byName));
+// let keyboardShortcutToggleButton = initButton('show-key-shortcuts', 'Show Editor Keyboard Shortcuts');
+// let onKeyboardShortcutsToggle = disableOnOutsideAreaClick (keyboardShortcutsView, [ keyboardShortcutsView, keyboardShortcutToggleButton ]);
+// keyboardShortcutToggleButton.addEventListener('click', (e) => {
+    // toggleElementsActive ( [ keyboardShortcutsView, keyboardShortcutToggleButton ]);
+    // onKeyboardShortcutsToggle();
+// });
 
 initializeResizableElement ('code-area', 'code-area-resizer-click-area', false);
 
@@ -113,11 +113,11 @@ const updateViewHotkey = hot_keys.addHotKey( new HotKey ('command+s', 'ctrl+s') 
 
 const importFileToEditor = () => importFile(t => editor.session.setValue(t));
 let fileImportButton = initButton('file-import', 'Import File ' + importFileHotkey.toString());
-fileImportButton.addEventListener('click', (e) => importFileToEditor());
+fileImportButton.addEventListener('click', importFileToEditor);
 
 let projectExporter = initializeProjectExporter (getSessionValues, appName, appURL);
 let projectExportButton = initButton ('file-export', 'Export Project ' + exportProjectHotkey.toString());
-projectExportButton.addEventListener('click', (e) => projectExporter.exportProject());
+projectExportButton.addEventListener('click', projectExporter.exportProject);
 
 let consoleWindow = initializeConsole ();
 let consoleWindowToggle = initButton ('log-window-toggle', 'Toggle Console ' + toggleConsoleHotKey.toString());
@@ -127,7 +127,7 @@ function toggleConsole () {
     consoleWindow.toggleConsole();
 };
 
-consoleWindowToggle.addEventListener('click', consoleWindow.toggleConsole);
+consoleWindowToggle.addEventListener('click', toggleConsole);
 toggleConsole ();
 
 hot_keys.finishHotkeyInitialization(handleHotkey);
