@@ -43,4 +43,5 @@
 - Body Tag classes, id, etc...
 - Persistent projects that can be linked to
 - offsite embedding
-- rename project
+- check for empty file export
+- user accounts

@@ -19,66 +19,27 @@
 */
 
 
-
+import {
+    addChildToElement, initializeResizableElement, triggerWindowResizeEvent,
+    initButton, toggleElementActive, buildToggleButton
+} from './dom-utils.js';
 
 
 /*
     handle the console window in the bottom section of the screen
-
-    we intercept the result display's iframe console.logs (and warns / errors)
-
-    by injecting a script into the formatted final display html that overrides the iframe context's
-    console.log/warn/error to send a message to our outer window wiht the arguments instead
-
-    then we display them in our custom console window, this way logs from the
-    in browser editor dont get confused with normal developer console logs
 */
-
-import {
-    setElementsActive, getElementActive, addChildToElement,
-    initializeResizableElement, triggerWindowResizeEvent,
-    initButton
-} from './dom-utils.js';
-
-
-export function initializeConsole (toggleConsoleHotKey) {
+export function initializeConsole () {
     const consoleMsgsID = 'log-window-messages';
 
     let consoleWindow = document.getElementById('log-window');
-    let consoleWindowMsgs = document.getElementById(consoleMsgsID);
-    const deleteLogIcon = 'highlight_off';
-
+    let msgs = document.getElementById(consoleMsgsID);
+    const deleteIcon = 'highlight_off';
 
     // handle when user wants to delete a single message
-    consoleWindowMsgs.addEventListener('click', (e) => {
-        if (e.target.innerText === deleteLogIcon)
-            consoleWindowMsgs.removeChild(e.target.parentElement);
+    msgs.addEventListener('click', (e) => {
+        if (e.target.innerText === deleteIcon)
+            msgs.removeChild(e.target.parentElement);
     });
-
-    // prepare to receive a message from the iframe with the log arguments
-    window.addEventListener("message", (event) => {
-        if (event.data[event.data.length - 1] !== 'LOG')
-            return;
-
-        let type = event.data.pop();
-        let severity = event.data.pop();
-
-        // parse obj to string
-        function obj2String (obj) {
-            if (Array.isArray(obj))
-                return `[ ${obj.toString()} ]`;
-            else if (typeof obj === 'object') {
-                // check if it has a custom 'toString' method
-                if (obj.toString !== Object.prototype.toString)
-                    return obj.toString();
-                return JSON.stringify(obj);
-            }
-            return String(obj);
-        }
-        // add a string representation to the log messages element
-        addLog ( event.data.map( d => obj2String (d) ).join(' - '), severity );
-    });
-
     /*
         adds a log elemnt to the messages list:
         <div>
@@ -88,33 +49,31 @@ export function initializeConsole (toggleConsoleHotKey) {
     */
     const severitySuffixes = [ 'log', 'warn', 'err' ];
     function addLog (logTxt, severity) {
-        let msg = addChildToElement(consoleWindowMsgs, 'div', 'log-message ' + severitySuffixes[severity]);
+        let msg = addChildToElement(msgs, 'div', 'log-message ' + severitySuffixes[severity]);
         addChildToElement(msg, 'span', '', logTxt);
-        addChildToElement(msg, 'i', 'material-icons', deleteLogIcon);
+        addChildToElement(msg, 'i', 'material-icons', deleteIcon);
     }
-
     // deletes all console messages
     function clearConsole () {
-        consoleWindowMsgs.innerHTML = '';
+        msgs.innerHTML = '';
     }
+    // set up the console window toggle
+    function toggleConsole () {
+        toggleElementActive(consoleWindow);
+        // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
+        triggerWindowResizeEvent();
+    }
+
+    let result = {
+        toggleConsole, clearConsole, addLog,
+        clearConsoleOnUpdate: true,
+    };
+
+    buildToggleButton ('log-window-clear-on-update', 'Should the console clear every time the view is updated?', () => result.clearConsoleOnUpdate, (v) => result.clearConsoleOnUpdate = v, true);
 
     // set up the clear console button
     let logWindowClear = initButton ('log-window-clear', 'Clear console messages.');
     logWindowClear.addEventListener('click', clearConsole);
-
-    let btn = initButton ('log-window-toggle', 'Toggle Console ' + toggleConsoleHotKey);
-
-    // set up the console window toggle
-    function toggleConsole (active) {
-        // just toggle to opposite if active parameter is not supplied
-        if (active === undefined)
-            active = !getElementActive(consoleWindow);
-
-        setElementsActive([btn, consoleWindow], active);
-        // need to trigger a delayed window resize event or size of scrollable area in editor goes funky
-        triggerWindowResizeEvent();
-    }
-    btn.addEventListener('click', (e) => toggleConsole (undefined, e))
 
     /*
         handle resizing the console messages section by
@@ -124,10 +83,6 @@ export function initializeConsole (toggleConsoleHotKey) {
     // which are below the drag point
     let pixelOffset = document.getElementById('log-window-title').getBoundingClientRect().height;
     initializeResizableElement (consoleMsgsID, 'log-window-resizer-click-area', true, pixelOffset);
-    toggleConsole (true);
 
-    return {
-        toggleConsole,
-        clearConsole
-    };
+    return result;
 }

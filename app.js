@@ -25,13 +25,11 @@ import {
     initializeResizableElement,
     toggleElementsActive,
     initButton,
-    disableOnOutsideAreaClick
+    disableOnOutsideAreaClick,
+    toggleElementActive
 } from './scripts/dom-utils.js';
 import { initializeEditor, themes, defaultTheme, defaultFontSize, defaultTabSize } from './scripts/editor-setup.js';
 import { initResultDisplay } from './scripts/result-display.js';
-
-
-
 
 import { initializeKeyboardShortcuts } from './scripts/keyboard-shortcuts.js';
 
@@ -76,7 +74,7 @@ btn.addEventListener('click', (e) => {
 `;
 
 
-let { editor, name2sess } = initializeEditor(defaultHTML, defaultCSS, defaultJS);
+let { editor, name2sess, getSessionValues } = initializeEditor(defaultHTML, defaultCSS, defaultJS);
 
 /*
     build settings menu
@@ -94,10 +92,6 @@ buildSelector ('theme-select', themes, defaultTheme, (theme) => editor.setTheme(
 buildSelector ('font-size-select', [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], defaultFontSize, (fontSize) => editor.setFontSize(fontSize) );
 buildSelector ('tab-size-select', [2,4], defaultTabSize, (tabSize) => editor.setOption('tabSize', tabSize) );
 buildToggleButton ('wrap-button', 'Toggle text wrap in the editor.', () => name2sess.HTML.getUseWrapMode(), (v) => Object.values(name2sess).forEach (s => s.setUseWrapMode(v)), true);
-
-
-let clearConsoleOnUpdate = true;
-buildToggleButton ('log-window-clear-on-update', 'Should the console clear every time the view is updated?', () => clearConsoleOnUpdate, (v) => clearConsoleOnUpdate = v, true);
 
 buildTabs ('language-select', Object.keys(name2sess), 0, (language) => editor.setSession(name2sess[language]));
 
@@ -117,23 +111,31 @@ const exportProjectHotkey = hot_keys.addHotKey( new HotKey ('command+e', 'ctrl+e
 const toggleConsoleHotKey = hot_keys.addHotKey( new HotKey ('command+shift+c', 'ctrl+shift+c') );
 const updateViewHotkey = hot_keys.addHotKey( new HotKey ('command+s', 'ctrl+s') );
 
-const sessionValuesGet = () => { return { html: name2sess.HTML.getValue(), css: name2sess.CSS.getValue(), js: name2sess.JS.getValue() }; };
-
-
 const importFileToEditor = () => importFile(t => editor.session.setValue(t));
 let fileImportButton = initButton('file-import', 'Import File ' + importFileHotkey.toString());
 fileImportButton.addEventListener('click', (e) => importFileToEditor());
 
-let projectExporter = initializeProjectExporter (sessionValuesGet, appName, appURL);
+let projectExporter = initializeProjectExporter (getSessionValues, appName, appURL);
 let projectExportButton = initButton ('file-export', 'Export Project ' + exportProjectHotkey.toString());
 projectExportButton.addEventListener('click', (e) => projectExporter.exportProject());
 
-let consoleWindow = initializeConsole (toggleConsoleHotKey.toString());
+let consoleWindow = initializeConsole ();
+let consoleWindowToggle = initButton ('log-window-toggle', 'Toggle Console ' + toggleConsoleHotKey.toString());
 
-let resultDisplay = initResultDisplay (hot_keys.allHotKeysString(), 'https://unpkg.com/hotkeys-js/dist/hotkeys.min.js', sessionValuesGet );
+function toggleConsole () {
+    toggleElementActive(consoleWindowToggle);
+    consoleWindow.toggleConsole();
+};
+
+consoleWindowToggle.addEventListener('click', consoleWindow.toggleConsole);
+toggleConsole ();
+
+hot_keys.finishHotkeyInitialization(handleHotkey);
+
+let resultDisplay = initResultDisplay (hot_keys.allHotKeysString(), 'https://unpkg.com/hotkeys-js/dist/hotkeys.min.js', getSessionValues, consoleWindow, handleHotkey);
 
 function updateView () {
-    if (clearConsoleOnUpdate)
+    if (consoleWindow.clearConsoleOnUpdate)
         consoleWindow.clearConsole();
     resultDisplay.updateDisplay ();
 }
@@ -145,20 +147,12 @@ function handleHotkey (key) {
     if (updateViewHotkey.match(key))
         updateView();
     else if (toggleConsoleHotKey.match(key))
-        consoleWindow.toggleConsole();
+        toggleConsole();
     else if (importFileHotkey.match(key))
         importFileToEditor();
     else if (exportProjectHotkey.match(key))
         projectExporter.exportProject();
 }
 
-hot_keys.finishHotkeyInitialization(handleHotkey);
-
-// prepare to receive a message from the iframe with the hotkey arguments
-window.addEventListener("message", (event) => {
-    if (event.data[1] !== 'HOTKEY')
-        return;
-    handleHotkey(event.data[0]);
-});
 
 updateView();

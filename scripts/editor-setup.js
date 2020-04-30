@@ -36,7 +36,7 @@ export const defaultTabSize = 4;
 export const defaultTheme = 'tomorrow_night_eighties';
 
 // initialize an ace editor, and start 3 sessions for html, css, js
-export function initializeEditor (defaultHTML, defaultCSS, defaultJS) {
+export function initializeEditor (initialHTML, initialCSS, initialJS) {
 
     // create the editor
     let editor = ace.edit("editor");
@@ -54,10 +54,14 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS) {
 
     // create an object for the sessions
     const name2sess =  {
-        HTML: createSession ('html', defaultHTML),
-        CSS: createSession ('css', defaultCSS),
-        JS: createSession ('javascript', defaultJS),
+        HTML: createSession ('html', initialHTML),
+        CSS: createSession ('css', initialCSS),
+        JS: createSession ('javascript', initialJS),
     };
+
+    const getSessionValues = () => { return { html: name2sess.HTML.getValue(), css: name2sess.CSS.getValue(), js: name2sess.JS.getValue() }; };
+
+
 
     // set configuration options
     editor.setOptions({
@@ -128,7 +132,7 @@ export function initializeEditor (defaultHTML, defaultCSS, defaultJS) {
 
     // editor.setReadOnly(true);  // false to make it editable
 
-    return { editor, name2sess };
+    return { editor, name2sess, getSessionValues };
 }
 
 // all the possible editor color themes

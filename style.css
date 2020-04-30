@@ -36,6 +36,8 @@ body {
 
 /* contains both the rendered product column and the coding area */
 #site-container {
+    overflow-x: hidden;
+
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -44,10 +46,8 @@ body {
 #top-half {
     flex: 1;
     display: flex;
-    /* position: relative; */
 }
 #bottom-half {
-    /* position: relative; */
 }
 
 
@@ -295,30 +295,32 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
 }
-
 #log-window-title-buttons {
     margin-left: auto;
     display: flex;
 }
-
 #log-window-clear{
     border-top-right-radius: 7px;
 }
 
 .log-message {
-    font-size: 14;
+    font-size: 11;
     /* 0 alpha, transparent */
     background-color: rgba(0,0,0,0);
 
-    border-bottom: 1px solid var(--font-color);
+    border-bottom: 1px solid var(--light-gray);
 
-    padding: 3px;
+    padding: 2px;
     padding-left: 10px;
     padding-right: 30px;
-    margin: 0px;
+    /* margin: 0px; */
+    /* margin-top: auto;
+    margin-bottom: auto; */
     display: flex;
     justify-content: space-between;
     color: var(--font-color);
+
+    font-family: "system-ui";
 }
 
 /* delete log message icon */
@@ -328,7 +330,7 @@ body {
     cursor: pointer;
 }
 .log-message.err {
-    color: red;
+    color: rgb(240, 0, 0);
 }
 .log-message.warn {
     color: darkorange;

@@ -33,9 +33,79 @@
 
 import { assertHTMLIsWithinHTMLTags } from './dom-utils.js';
 
-export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet) {
+export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet, consoleWindow, handleHotkey) {
     // an iframe element
     let resultDisplay = document.getElementById("result-display");
+
+
+    /*
+        we intercept the result display's iframe console.logs (and warns / errors)
+
+        by injecting a script into the formatted final display html that overrides the iframe context's
+        console.log/warn/error to send a message to our outer window wiht the arguments instead
+
+        then we display them in our custom console window, this way logs from the
+        in browser editor dont get confused with normal developer console logs
+    */
+   const overrideConsoleLogInIFrameScript =`
+        function postMessageToParentWindow (args, severity) {
+            function obj2String (obj) {
+                if (Array.isArray(obj))
+                    return \`[ \${obj.toString()} ]\`;
+                else if (typeof obj === 'object') {
+                    if (obj.toString !== Object.prototype.toString)
+                        return obj.toString();
+                    return JSON.stringify(obj);
+                }
+                return String(obj);
+            }
+            args = Array.from(args).map(a => obj2String(a) );
+            args.push(severity);
+            args.push('LOG');
+            window.parent.postMessage(args, '*');
+        }
+        console.log = function() { postMessageToParentWindow (arguments, 0); };
+        console.warn = function() { postMessageToParentWindow (arguments, 1); };
+        console.error = function() { postMessageToParentWindow (arguments, 2); };
+    `;
+    // prepare to receive a message from the iframe with the log arguments
+    window.addEventListener("message", (event) => {
+        if (event.data[event.data.length - 1] !== 'LOG')
+            return;
+        let type = event.data.pop();
+        let severity = event.data.pop();
+        // add a string representation to the log messages element
+        consoleWindow.addLog ( event.data.join(' - '), severity );
+    });
+
+
+    // we need to define hotkeys manually in the iframe,
+    // since hotkeys assigned outside dont work when hovering the mosue
+    // within iframe context
+    const initializeHotKeysScript = `
+        <script src="${hotkeysSource}"></script>
+        <script>
+            hotkeys.filter = function(event) {
+                return true;
+            }
+            hotkeys('${allHotKeys}', function(event, handler) {
+
+                // send a message to the parent that a hotkey was pressed
+                window.parent.postMessage([ handler.key, 'HOTKEY' ], '*');
+
+                // return false to prevent event default
+                return false;
+            });
+        </script>
+    `;
+
+    // prepare to receive a message from the iframe with the hotkey arguments
+    window.addEventListener("message", (event) => {
+        if (event.data[1] !== 'HOTKEY')
+            return;
+        handleHotkey(event.data[0]);
+    });
+
 
     function updateDisplay () {
         let { html, css, js } = sessionStringsGet();
@@ -60,18 +130,7 @@ export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet)
                     ${htmlNode.getElementsByTagName('body')[0].innerHTML}
                     <script>
 
-                        // insert a script that overrides the iframe's console logs
-                        // to instead send a message to the parent window, with the arguments
-                        // then logs are printed to our custom console
-
-                        function postMessageToParentWindow (args, severity) {
-                            Array.prototype.push.call(args, severity);
-                            Array.prototype.push.call(args, 'LOG');
-                            window.parent.postMessage(Array.from(args), '*');
-                        }
-                        console.log = function() { postMessageToParentWindow (arguments, 0); };
-                        console.warn = function() { postMessageToParentWindow (arguments, 1); };
-                        console.error = function() { postMessageToParentWindow (arguments, 2); };
+                        ${overrideConsoleLogInIFrameScript}
 
                         // surround the js script section in a try catch, so that any
                         // errors get propogated up to our custom console
@@ -83,25 +142,8 @@ export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet)
                         }
 
                     </script>
+                    ${initializeHotKeysScript}
 
-                    <!--
-                        we need to define hotkeys manually in the iframe,
-                        since hotkeys assigned outside dont work within iframe context
-                    -->
-                    <script src="${hotkeysSource}"></script>
-                    <script>
-                        hotkeys.filter = function(event){
-                            return true;
-                        }
-                        hotkeys('${allHotKeys}', function(event, handler) {
-
-                            // send a message to the parent that a hotkey was pressed
-                            window.parent.postMessage([ handler.key, 'HOTKEY' ], '*');
-
-                            // return false to prevent event default
-                            return false;
-                        });
-                    </script>
                 </body>
             </html>
         `;
