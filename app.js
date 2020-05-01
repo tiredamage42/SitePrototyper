@@ -52,7 +52,8 @@ const defaultHTML = `
     </head>
     <body>
         <h1>Welcome To Wingman!</h1>
-        <button type="submit" id="demo-button">Demo Button</button>
+        <p>Code result will be displayed in this window.</p>
+        <button type="submit" id="clear-button">Click Here To Start From A Blank Project</button>
     </body>
 </html>
 `;
@@ -61,20 +62,33 @@ const defaultCSS = `
 body {
     text-align: center;
 }
+button {
+    border: 1px solid rgb(82, 112, 165);
+    color: #ccc;
+    background-color: rgb(65, 62, 60);
+    padding: 5px 10px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: rgb(105,102,100);
+}
+button:active {
+    background-color: rgb(82, 112, 165);
+    transform: translate(0, 1px);
+}
 `;
 const defaultJS = `
-console.log('Testing console.log');
-console.warn('Testing console.warn');
-console.error('Testing console.error');
+const btn = document.getElementById('clear-button');
 
-const btn = document.getElementById('demo-button');
 btn.addEventListener('click', (e) => {
-    alert("JS is functional!");
+    window.parent.postMessage([ 'NEW_PROJECT_BLANK' ], '*');
 });
+
+console.log('console.[log / warn / error], and any errors will display here');
 `;
 
 
-let { editor, name2sess, getSessionValues } = initializeEditor(defaultHTML, defaultCSS, defaultJS);
+let { editor, name2sess, getSessionValues, setSessionValues } = initializeEditor(defaultHTML, defaultCSS, defaultJS);
 
 /*
     build settings menu
@@ -120,15 +134,25 @@ let projectExportButton = initButton ('file-export', 'Export Project ' + exportP
 projectExportButton.addEventListener('click', projectExporter.exportProject);
 
 let consoleWindow = initializeConsole ();
-let consoleWindowToggle = initButton ('log-window-toggle', 'Toggle Console ' + toggleConsoleHotKey.toString());
 
+/*
+    handle resizing the console messages section by
+    clicking and dragging the top of the title bar
+*/
+// pixel offset since we're dragigng form the top, but resizing the messages,
+// which are below the drag point
+let pixelOffset = document.getElementById('log-window-title').getBoundingClientRect().height;
+initializeResizableElement ('log-window-messages', 'log-window-resizer-click-area', true, pixelOffset);
+
+
+let consoleWindowToggle = initButton ('log-window-toggle', 'Toggle Console ' + toggleConsoleHotKey.toString());
 function toggleConsole () {
     toggleElementActive(consoleWindowToggle);
     consoleWindow.toggleConsole();
 };
-
 consoleWindowToggle.addEventListener('click', toggleConsole);
 toggleConsole ();
+
 
 hot_keys.finishHotkeyInitialization(handleHotkey);
 
@@ -156,3 +180,14 @@ function handleHotkey (key) {
 
 
 updateView();
+
+
+
+const newProjectBlank = (event) => {
+    if (event.data[0] !== 'NEW_PROJECT_BLANK')
+        return;
+    setSessionValues("", "", "");
+    updateView();
+    window.removeEventListener('message', newProjectBlank);
+};
+window.addEventListener("message", newProjectBlank);

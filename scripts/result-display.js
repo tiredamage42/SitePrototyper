@@ -37,7 +37,6 @@ export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet,
     // an iframe element
     let resultDisplay = document.getElementById("result-display");
 
-
     /*
         we intercept the result display's iframe console.logs (and warns / errors)
 
@@ -101,9 +100,8 @@ export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet,
 
     // prepare to receive a message from the iframe with the hotkey arguments
     window.addEventListener("message", (event) => {
-        if (event.data[1] !== 'HOTKEY')
-            return;
-        handleHotkey(event.data[0]);
+        if (event.data[1] === 'HOTKEY')
+            handleHotkey(event.data[0]);
     });
 
 
@@ -129,21 +127,17 @@ export function initResultDisplay (allHotKeys, hotkeysSource, sessionStringsGet,
                 <body>
                     ${htmlNode.getElementsByTagName('body')[0].innerHTML}
                     <script>
-
                         ${overrideConsoleLogInIFrameScript}
-
                         // surround the js script section in a try catch, so that any
-                        // errors get propogated up to our custom console
+                        // errors get sent up to our custom console
                         try {
                             ${js}
                         }
                         catch(e) {
                             console.error(e);
                         }
-
                     </script>
                     ${initializeHotKeysScript}
-
                 </body>
             </html>
         `;

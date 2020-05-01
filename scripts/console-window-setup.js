@@ -20,7 +20,7 @@
 
 
 import {
-    addChildToElement, initializeResizableElement, triggerWindowResizeEvent,
+    addChildToElement, triggerWindowResizeEvent,
     initButton, toggleElementActive, buildToggleButton
 } from './dom-utils.js';
 
@@ -29,10 +29,8 @@ import {
     handle the console window in the bottom section of the screen
 */
 export function initializeConsole () {
-    const consoleMsgsID = 'log-window-messages';
-
     let consoleWindow = document.getElementById('log-window');
-    let msgs = document.getElementById(consoleMsgsID);
+    let msgs = document.getElementById('log-window-messages');
     const deleteIcon = 'highlight_off';
 
     // handle when user wants to delete a single message
@@ -74,15 +72,6 @@ export function initializeConsole () {
     // set up the clear console button
     let logWindowClear = initButton ('log-window-clear', 'Clear console messages.');
     logWindowClear.addEventListener('click', clearConsole);
-
-    /*
-        handle resizing the console messages section by
-        clicking and dragging the top of the title bar
-    */
-    // pixel offset since we're dragigng form the top, but resizing the messages,
-    // which are below the drag point
-    let pixelOffset = document.getElementById('log-window-title').getBoundingClientRect().height;
-    initializeResizableElement (consoleMsgsID, 'log-window-resizer-click-area', true, pixelOffset);
 
     return result;
 }

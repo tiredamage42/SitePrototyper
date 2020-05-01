@@ -60,7 +60,11 @@ export function initializeEditor (initialHTML, initialCSS, initialJS) {
     };
 
     const getSessionValues = () => { return { html: name2sess.HTML.getValue(), css: name2sess.CSS.getValue(), js: name2sess.JS.getValue() }; };
-
+    const setSessionValues = (html, css, js) => {
+        name2sess.HTML.setValue(html);
+        name2sess.CSS.setValue(css);
+        name2sess.JS.setValue(js);
+    };
 
 
     // set configuration options
@@ -132,7 +136,7 @@ export function initializeEditor (initialHTML, initialCSS, initialJS) {
 
     // editor.setReadOnly(true);  // false to make it editable
 
-    return { editor, name2sess, getSessionValues };
+    return { editor, name2sess, getSessionValues, setSessionValues };
 }
 
 // all the possible editor color themes
